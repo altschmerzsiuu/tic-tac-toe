@@ -1,0 +1,508 @@
+/* ===== WARNA: Ganti warna di sini sesuai selera ===== */
+:root {
+    --primary-blue: #a8d5e2;
+    --light-blue: #e3f2fd;
+    --white: #ffffff;
+    --dark-text: #2c3e50;
+    --accent: #64b5f6;
+    --zonk-red: #ff6b6b;
+    --success-green: #51cf66;
+    --shadow: rgba(0, 0, 0, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, var(--light-blue) 0%, var(--white) 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.container {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 40px var(--shadow);
+    max-width: 800px;
+    width: 100%;
+}
+
+h1 {
+    text-align: center;
+    color: var(--dark-text);
+    margin-bottom: 20px;
+    font-size: 2em;
+}
+
+/* ===== GAME INFO & TIMER ===== */
+.game-info {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.team-display {
+    background: var(--primary-blue);
+    padding: 15px 25px;
+    border-radius: 15px;
+    font-size: 1.3em;
+    font-weight: bold;
+    color: var(--dark-text);
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.team-display.active {
+    transform: scale(1.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    background: var(--accent);
+    color: white;
+}
+
+.skill-indicator {
+    margin-top: 10px;
+    font-size: 0.8em;
+    min-height: 20px;
+}
+
+.timer-section {
+    background: var(--light-blue);
+    padding: 15px;
+    border-radius: 15px;
+    text-align: center;
+}
+
+.timer-display {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: var(--dark-text);
+    margin-bottom: 10px;
+}
+
+.timer-display.warning {
+    color: var(--zonk-red);
+    animation: pulse 0.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.timer-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.timer-controls input {
+    width: 80px;
+    padding: 8px;
+    border: 2px solid var(--primary-blue);
+    border-radius: 8px;
+    font-size: 1em;
+    text-align: center;
+}
+
+.timer-controls button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 8px;
+    background: var(--accent);
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.timer-controls button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px var(--shadow);
+}
+
+/* ===== BOARD TIC-TAC-TOE ===== */
+.board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 20px auto;
+    max-width: 450px;
+}
+
+.cell {
+    aspect-ratio: 1;
+    background: var(--light-blue);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 3px solid transparent;
+}
+
+.cell:hover:not(.filled):not(.blocked) {
+    background: var(--primary-blue);
+    transform: scale(1.05);
+}
+
+.cell.filled {
+    cursor: not-allowed;
+}
+
+.cell.blocked {
+    background: repeating-linear-gradient(
+        45deg,
+        #ffc9c9,
+        #ffc9c9 10px,
+        #ffe0e0 10px,
+        #ffe0e0 20px
+    );
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.cell.x {
+    color: #4a90e2;
+}
+
+.cell.o {
+    color: #e24a4a;
+}
+
+.cell.winning {
+    background: var(--success-green);
+    animation: winner 0.5s ease-in-out;
+}
+
+@keyframes winner {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* ===== SKILL BUTTONS ===== */
+.skill-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.skill-buttons button {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#useSkillBtn {
+    background: var(--success-green);
+    color: white;
+}
+
+#skipSkillBtn {
+    background: #868e96;
+    color: white;
+}
+
+.skill-buttons button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px var(--shadow);
+}
+
+/* ===== RESTART BUTTON ===== */
+.restart-btn {
+    display: block;
+    margin: 20px auto;
+    padding: 15px 40px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.restart-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px var(--shadow);
+}
+
+/* ===== STATUS MESSAGE ===== */
+
+.status-message {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 1em;
+    font-weight: bold;
+    z-index: 2000; /* lebih tinggi dari modal backdrop */
+    pointer-events: none; /* biar gak nutup tombol skill */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.status-bar {
+    text-align: center;
+    margin: 10px 0 20px;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: var(--dark-text);
+    min-height: 20px; /* biar tempatnya tetap ada meski kosong */
+}
+
+/* khusus skill modal biar tidak block klik */
+#skillModal {
+    background: rgba(0,0,0,0.0); /* hapus backdrop */
+    pointer-events: none; /* biar backdrop gak nangkep klik */
+}
+
+#skillModal .modal-content {
+    position: absolute;
+    top: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.25);
+    pointer-events: auto; /* kontennya masih bisa diklik (tombol Batal) */
+}
+
+
+/* ===== MODAL ===== */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal.show {
+    display: flex;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-content h2 {
+    color: var(--dark-text);
+    margin-bottom: 20px;
+    font-size: 1.8em;
+}
+
+/* ===== BLINDBOX ===== */
+.blindbox-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.blindbox {
+    width: 120px;
+    height: 120px;
+    perspective: 1000px;
+    cursor: pointer;
+}
+
+.box-front, .box-back {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    font-size: 3em;
+    font-weight: bold;
+    transition: all 0.6s ease;
+    backface-visibility: hidden;
+    position: absolute;
+}
+
+.box-front {
+    background: var(--primary-blue);
+}
+
+.box-back {
+    background: var(--accent);
+    color: white;
+    font-size: 1.2em;
+    transform: rotateY(180deg);
+}
+
+.blindbox:hover .box-front {
+    transform: scale(1.1);
+}
+
+.blindbox.flipped .box-front {
+    transform: rotateY(180deg);
+}
+
+.blindbox.flipped .box-back {
+    transform: rotateY(0deg);
+}
+
+.blindbox.zonk .box-back {
+    background: var(--zonk-red);
+}
+
+.blindbox.skill .box-back {
+    background: var(--success-green);
+}
+
+/* ===== TEMA DISPLAY ===== */
+.theme-display {
+    background: var(--light-blue);
+    padding: 30px;
+    border-radius: 15px;
+    font-size: 2em;
+    font-weight: bold;
+    color: var(--dark-text);
+    margin: 20px 0;
+}
+
+.theme-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.theme-buttons button {
+    padding: 15px 40px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#correctBtn {
+    background: var(--success-green);
+    color: white;
+}
+
+#wrongBtn {
+    background: var(--zonk-red);
+    color: white;
+}
+
+.theme-buttons button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px var(--shadow);
+}
+
+/* ===== GAME OVER ===== */
+.game-over {
+    padding: 50px;
+}
+
+.game-over h2 {
+    font-size: 2.5em;
+    margin-bottom: 30px;
+}
+
+#playAgainBtn {
+    padding: 15px 50px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    font-size: 1.3em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#playAgainBtn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px var(--shadow);
+}
+
+/* ===== SKILL MODAL ===== */
+#cancelSkillBtn {
+    margin-top: 20px;
+    padding: 12px 30px;
+    background: #868e96;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#cancelSkillBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px var(--shadow);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+    h1 {
+        font-size: 1.5em;
+    }
+    
+    .cell {
+        font-size: 2em;
+    }
+    
+    .team-display {
+        font-size: 1em;
+    }
+    
+    .timer-display {
+        font-size: 2em;
+    }
+}
