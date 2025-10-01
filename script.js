@@ -6,42 +6,44 @@ let gameState = {
     themes: ['Matematika', 'Tebak Bendera', 'Bahasa Inggris', 'IPA', 'Bahasa Indonesia'],
     cellThemes: [],
     skillCells: [],
-    playerSkills: { X: null, O: null },
-    skillTurnsLeft: { X: 0, O: 0 },
+    playerSkills: { X: { count: 0, turnsLeft: 0 }, O: { count: 0, turnsLeft: 0 } },
     currentCell: null,
     timerInterval: null,
     timeLeft: 0,
-    timerRunning: false
+    timerRunning: false,
+    waitingForSkillTarget: false,
+    turnCount: { X: 0, O: 0 }
 };
 
-// ===== SOUND EFFECTS (Ganti URL sesuai file sound kamu) =====
+// ===== SOUND EFFECTS =====
 const sounds = {
-    click: new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3'), // Suara klik
-    skill: new Audio('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3'), // Suara dapat skill
-    zonk: new Audio('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3'), // Suara zonk
-    win: new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3'), // Suara menang
-    timer: new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3') // Suara timer habis
+    click: new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3'),
+    skill: new Audio('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3'),
+    zonk: new Audio('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3'),
+    win: new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3'),
+    timer: new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3')
 };
 
-// Atur volume (0.0 - 1.0)
-Object.values(sounds).forEach(sound => sound.volume = 0.2);
+Object.values(sounds).forEach(sound => sound.volume = 0.3);
 
 // ===== DOM ELEMENTS =====
 const cells = document.querySelectorAll('.cell');
 const teamXDisplay = document.getElementById('teamX');
 const teamODisplay = document.getElementById('teamO');
-const skillXIndicator = document.getElementById('skillX');
-const skillOIndicator = document.getElementById('skillO');
-const skillButtons = document.getElementById('skillButtons');
-const useSkillBtn = document.getElementById('useSkillBtn');
-const skipSkillBtn = document.getElementById('skipSkillBtn');
+const skillXDisplay = document.getElementById('skillX');
+const skillODisplay = document.getElementById('skillO');
 const restartBtn = document.getElementById('restartBtn');
-const statusMsg = document.getElementById('statusMsg');
+const prompterText = document.getElementById('prompterText');
+const prompterIcon = document.querySelector('.prompter-icon');
+const currentTurnDisplay = document.getElementById('currentTurn');
+const skillActionButtons = document.getElementById('skillActionButtons');
+const useSkillNowBtn = document.getElementById('useSkillNowBtn');
+const useSkillLaterBtn = document.getElementById('useSkillLaterBtn');
 
 // Modals
 const blindboxModal = document.getElementById('blindboxModal');
 const themeModal = document.getElementById('themeModal');
-const skillModal = document.getElementById('skillModal');
+const timesUpModal = document.getElementById('timesUpModal');
 const gameOverModal = document.getElementById('gameOverModal');
 
 // Timer
@@ -56,24 +58,24 @@ function init() {
     gameState.board = ['', '', '', '', '', '', '', '', ''];
     gameState.currentPlayer = 'X';
     gameState.gameActive = true;
-    gameState.playerSkills = { X: null, O: null };
-    gameState.skillTurnsLeft = { X: 0, O: 0 };
+    gameState.playerSkills = { X: { count: 0, turnsLeft: 0 }, O: { count: 0, turnsLeft: 0 } };
+    gameState.waitingForSkillTarget = false;
+    gameState.turnCount = { X: 0, O: 0 };
     
-    // Acak tema untuk setiap kolom
     gameState.cellThemes = shuffleArray([...gameState.themes, ...gameState.themes.slice(0, 4)]);
     gameState.skillCells = getRandomSkillCells();
     
-    // Reset board UI
     cells.forEach(cell => {
         cell.textContent = '';
-        cell.classList.remove('filled', 'blocked', 'winning', 'x', 'o');
-        cell.addEventListener('click', handleCellClick);
+        cell.classList.remove('filled', 'blocked', 'winning', 'x', 'o', 'selecting');
+        cell.onclick = handleCellClick;
     });
     
     updateDisplay();
+    updatePrompter('🎯', 'Tim X memulai permainan! Klik kolom untuk bermain...');
     hideAllModals();
+    skillActionButtons.style.display = 'none';
     restartBtn.style.display = 'none';
-    statusMsg.textContent = '';
     stopTimer();
 }
 
@@ -95,40 +97,49 @@ function getRandomSkillCells() {
 function updateDisplay() {
     teamXDisplay.classList.toggle('active', gameState.currentPlayer === 'X');
     teamODisplay.classList.toggle('active', gameState.currentPlayer === 'O');
+    currentTurnDisplay.textContent = `Giliran: Tim ${gameState.currentPlayer}`;
     
-    // Update skill indicators
-    updateSkillIndicator('X');
-    updateSkillIndicator('O');
+    updateSkillDisplay('X');
+    updateSkillDisplay('O');
     
-    // Show skill buttons if current player has skill
-    if (gameState.playerSkills[gameState.currentPlayer] && gameState.skillTurnsLeft[gameState.currentPlayer] > 0) {
-        skillButtons.style.display = 'flex';
+    // Show/hide skill action buttons
+    const currentSkill = gameState.playerSkills[gameState.currentPlayer];
+    if (currentSkill.count > 0 && currentSkill.turnsLeft > 0 && !gameState.waitingForSkillTarget) {
+        skillActionButtons.style.display = 'flex';
     } else {
-        skillButtons.style.display = 'none';
+        skillActionButtons.style.display = 'none';
     }
 }
 
-function updateSkillIndicator(player) {
-    const indicator = player === 'X' ? skillXIndicator : skillOIndicator;
+function updateSkillDisplay(player) {
+    const skillDisplay = player === 'X' ? skillXDisplay : skillODisplay;
     const skill = gameState.playerSkills[player];
-    const turnsLeft = gameState.skillTurnsLeft[player];
-
-    if (skill && turnsLeft > 0) {
-        // Hanya tampilkan erase
-        const skillName = skill === 'erase' ? '🗑️ Hapus' : '';
-        indicator.textContent = skillName ? `${skillName} (${turnsLeft} giliran)` : '';
+    
+    if (skill.count > 0 && skill.turnsLeft > 0) {
+        skillDisplay.className = 'skill-display has-skill';
+        skillDisplay.innerHTML = `
+            <div class="skill-icon-display">🗑️</div>
+            <div class="skill-name-display">Hapus Tanda</div>
+            <div class="skill-count-display">x${skill.count}</div>
+            <div class="skill-turns-left">${skill.turnsLeft} giliran tersisa</div>
+        `;
     } else {
-        indicator.textContent = '';
+        skillDisplay.className = 'skill-display';
+        skillDisplay.innerHTML = '<div class="no-skill">Belum ada skill</div>';
     }
+}
+
+function updatePrompter(icon, message) {
+    prompterIcon.textContent = icon;
+    prompterText.textContent = message;
 }
 
 // ===== CELL CLICK HANDLER =====
 function handleCellClick(e) {
-    if (!gameState.gameActive) return;
+    if (!gameState.gameActive || gameState.waitingForSkillTarget) return;
     
     const index = parseInt(e.target.dataset.index);
     
-    // Check if cell is already filled or blocked
     if (gameState.board[index] !== '' || e.target.classList.contains('blocked')) {
         return;
     }
@@ -136,72 +147,63 @@ function handleCellClick(e) {
     gameState.currentCell = index;
     playSound('click');
     
-    // Check if this cell has skill
     if (gameState.skillCells.includes(index)) {
+        updatePrompter('🎁', `Tim ${gameState.currentPlayer} menemukan kotak misteri! Pilih dengan hati-hati...`);
         showBlindboxModal();
     } else {
         showThemeModal(index);
     }
 }
 
-// ===== BLINDBOX MODAL =====
 function showBlindboxModal() {
     const boxes = document.querySelectorAll('.blindbox');
-
-    // Reset boxes
+    
     boxes.forEach(box => {
         box.classList.remove('flipped', 'zonk', 'skill');
         box.style.pointerEvents = 'auto';
-        box.dataset.skill = ''; // Reset skill
     });
-
-    // Acak skill dan assign ke box (pastikan jumlah box dan skill sama)
-    const skillPool = ['erase', 'zonk'];
-    const skills = shuffleArray(skillPool).slice(0, boxes.length);
+    
+    // Shuffle 2 boxes: erase & zonk
+    const results = shuffleArray(['erase', 'zonk']);
     boxes.forEach((box, i) => {
-        box.dataset.skill = skills[i];
+        box.dataset.result = results[i];
     });
-
-    // Add click handlers
+    
     boxes.forEach(box => {
         box.onclick = () => handleBlindboxClick(box);
     });
-
+    
     showModal(blindboxModal);
 }
 
 function handleBlindboxClick(box) {
-    const skill = box.dataset.skill;
-
-    // Flip animation
+    const result = box.dataset.result;
+    
     box.classList.add('flipped');
-
-    // Disable other boxes
+    
     document.querySelectorAll('.blindbox').forEach(b => {
         b.style.pointerEvents = 'none';
     });
-
+    
     setTimeout(() => {
-        if (skill === 'zonk') {
+        if (result === 'zonk') {
             box.classList.add('zonk');
             playSound('zonk');
-            gameState.playerSkills[gameState.currentPlayer] = null;
-            gameState.skillTurnsLeft[gameState.currentPlayer] = 0;
-            statusMsg.textContent = '💥 ZONK! Tidak dapat skill';
-        } else if (skill === 'erase') {
+            updatePrompter('💥', `Tim ${gameState.currentPlayer} mendapat ZONK! Tidak apa, tetap semangat!`);
+        } else if (result === 'erase') {
             box.classList.add('skill');
             playSound('skill');
-            gameState.playerSkills[gameState.currentPlayer] = skill;
-            gameState.skillTurnsLeft[gameState.currentPlayer] = 3;
-            statusMsg.textContent = `⚡ Tim ${gameState.currentPlayer} dapat skill: Hapus Tanda!`;
+            // Add skill with 2 turns
+            gameState.playerSkills[gameState.currentPlayer].count++;
+            gameState.playerSkills[gameState.currentPlayer].turnsLeft += 2;
+            updatePrompter('⚡', `Tim ${gameState.currentPlayer} mendapat skill Hapus Tanda! Ready to fire! 🔥`);
         }
-
+        
         setTimeout(() => {
             hideModal(blindboxModal);
             showThemeModal(gameState.currentCell);
-            updateDisplay(); // Pastikan indikator skill update
-        }, 1500);
-    }, 600);
+        }, 1800);
+    }, 700);
 }
 
 // ===== THEME MODAL =====
@@ -210,8 +212,6 @@ function showThemeModal(index) {
     document.getElementById('themeDisplay').textContent = theme;
     
     showModal(themeModal);
-    
-    // Reset timer saat modal muncul
     stopTimer();
 }
 
@@ -221,7 +221,7 @@ document.getElementById('correctBtn').onclick = () => {
 
 document.getElementById('wrongBtn').onclick = () => {
     handleAnswer(false);
-};
+}
 
 function handleAnswer(isCorrect) {
     hideModal(themeModal);
@@ -233,6 +233,8 @@ function handleAnswer(isCorrect) {
         cell.textContent = gameState.currentPlayer;
         cell.classList.add('filled', gameState.currentPlayer.toLowerCase());
         
+        updatePrompter('✅', `Tim ${gameState.currentPlayer} menjawab benar! Kolom berhasil diisi!`);
+        
         // Check win
         if (checkWin()) {
             handleGameEnd(`🎉 TIM ${gameState.currentPlayer} MENANG! 🎉`);
@@ -242,12 +244,20 @@ function handleAnswer(isCorrect) {
         
         // Check draw
         if (gameState.board.every(cell => cell !== '')) {
-            handleGameEnd('🤝 SERI! 🤝');
+            handleGameEnd('🤝 SERI! Kedua tim bermain dengan hebat! 🤝');
             return;
+        }
+    } else {
+        updatePrompter('❌', `Tim ${gameState.currentPlayer} salah menjawab. Giliran berikutnya!`);
+        
+        // Remove skill from this cell if it was a skill cell
+        const cellIndex = gameState.skillCells.indexOf(gameState.currentCell);
+        if (cellIndex !== -1) {
+            gameState.skillCells.splice(cellIndex, 1);
         }
     }
     
-    // Decrease skill turns
+    // Decrease skill turns only for current player's own turns
     decreaseSkillTurns();
     
     // Switch player
@@ -255,123 +265,83 @@ function handleAnswer(isCorrect) {
 }
 
 // ===== SKILL SYSTEM =====
-useSkillBtn.onclick = () => {
-    const skill = gameState.playerSkills[gameState.currentPlayer];
-
-    if (skill === 'erase') {
-        activateEraseSkill();
-    }
+useSkillNowBtn.onclick = () => {
+    activateEraseSkill();
 };
 
-skipSkillBtn.onclick = () => {
-    skillButtons.style.display = 'none';
+useSkillLaterBtn.onclick = () => {
+    skillActionButtons.style.display = 'none';
+    updatePrompter('⏳', `Tim ${gameState.currentPlayer} menyimpan skill untuk nanti. Bijak!`);
 };
-
-function activateBlockSkill() {
-    document.getElementById('skillModalTitle').textContent = '🚫 BLOCK KOLOM';
-    document.getElementById('skillModalText').textContent = 'Klik kolom kosong yang ingin diblokir:';
-    
-    showModal(skillModal);
-    
-    // Add temporary click handlers to empty cells
-    cells.forEach(cell => {
-        if (!cell.classList.contains('filled') && !cell.classList.contains('blocked')) {
-            cell.style.cursor = 'pointer';
-            cell.style.border = '3px solid #ff6b6b';
-            
-            const handler = () => {
-                cell.classList.add('blocked');
-                cell.style.border = '';
-                cells.forEach(c => {
-                    c.style.border = '';
-                    c.style.cursor = '';
-                    c.onclick = handleCellClick;
-                });
-                
-                gameState.playerSkills[gameState.currentPlayer] = null;
-                gameState.skillTurnsLeft[gameState.currentPlayer] = 0;
-                
-                hideModal(skillModal);
-                updateDisplay();
-                statusMsg.textContent = `🚫 Tim ${gameState.currentPlayer} memblokir kolom!`;
-            };
-            
-            cell.onclick = handler;
-        }
-    });
-}
 
 function activateEraseSkill() {
-    document.getElementById('skillModalTitle').textContent = '🗑️ HAPUS TANDA LAWAN';
-    document.getElementById('skillModalText').textContent = 'Klik tanda lawan yang ingin dihapus:';
+    gameState.waitingForSkillTarget = true;
+    skillActionButtons.style.display = 'none';
     
-    showModal(skillModal);
+    updatePrompter('🎯', `Tim ${gameState.currentPlayer}: Klik tanda lawan yang ingin dihapus!`);
     
     const opponent = gameState.currentPlayer === 'X' ? 'O' : 'X';
     
-    // Add temporary click handlers to opponent cells
+    // Highlight opponent cells
     cells.forEach((cell, index) => {
         if (gameState.board[index] === opponent) {
-            cell.style.cursor = 'pointer';
-            cell.style.border = '3px solid #51cf66';
+            cell.classList.add('selecting');
             
-            const handler = () => {
+            const originalClick = cell.onclick;
+            cell.onclick = () => {
+                // Erase the mark
                 gameState.board[index] = '';
                 cell.textContent = '';
                 cell.classList.remove('filled', 'x', 'o');
-                cell.style.border = '';
                 
+                // Remove selecting class from all cells
                 cells.forEach(c => {
-                    c.style.border = '';
-                    c.style.cursor = '';
+                    c.classList.remove('selecting');
                     c.onclick = handleCellClick;
                 });
                 
-                gameState.playerSkills[gameState.currentPlayer] = null;
-                gameState.skillTurnsLeft[gameState.currentPlayer] = 0;
+                // Use one skill
+                gameState.playerSkills[gameState.currentPlayer].count--;
+                if (gameState.playerSkills[gameState.currentPlayer].count === 0) {
+                    gameState.playerSkills[gameState.currentPlayer].turnsLeft = 0;
+                }
                 
-                hideModal(skillModal);
+                gameState.waitingForSkillTarget = false;
                 updateDisplay();
-                statusMsg.textContent = `🗑️ Tim ${gameState.currentPlayer} menghapus tanda lawan!`;
+                updatePrompter('🗑️', `Tim ${gameState.currentPlayer} menghapus tanda lawan! Strategi cerdas!`);
+                
+                playSound('skill');
             };
-            
-            cell.onclick = handler;
         }
     });
 }
-
-document.getElementById('cancelSkillBtn').onclick = () => {
-    hideModal(skillModal);
-    cells.forEach(cell => {
-        cell.style.border = '';
-        cell.style.cursor = '';
-        cell.onclick = handleCellClick;
-    });
-};
 
 function decreaseSkillTurns() {
-    ['X', 'O'].forEach(player => {
-        if (gameState.playerSkills[player] && gameState.skillTurnsLeft[player] > 0) {
-            gameState.skillTurnsLeft[player]--;
-            if (gameState.skillTurnsLeft[player] === 0) {
-                gameState.playerSkills[player] = null;
-            }
+    // Only decrease for current player
+    const player = gameState.currentPlayer;
+    if (gameState.playerSkills[player].turnsLeft > 0) {
+        gameState.playerSkills[player].turnsLeft--;
+        
+        if (gameState.playerSkills[player].turnsLeft === 0) {
+            gameState.playerSkills[player].count = 0;
+            updatePrompter('⏰', `Skill Tim ${player} expired! Gunakan lebih cepat lain kali!`);
         }
-    });
+    }
 }
-
 
 // ===== GAME LOGIC =====
 function switchPlayer() {
     gameState.currentPlayer = gameState.currentPlayer === 'X' ? 'O' : 'X';
+    gameState.turnCount[gameState.currentPlayer]++;
     updateDisplay();
+    updatePrompter('🔄', `Giliran Tim ${gameState.currentPlayer}! Waktunya menunjukkan kemampuan!`);
 }
 
 function checkWin() {
     const winPatterns = [
-        [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
-        [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
-        [0, 4, 8], [2, 4, 6]             // Diagonals
+        [0, 1, 2], [3, 4, 5], [6, 7, 8],
+        [0, 3, 6], [1, 4, 7], [2, 5, 8],
+        [0, 4, 8], [2, 4, 6]
     ];
     
     for (let pattern of winPatterns) {
@@ -380,7 +350,6 @@ function checkWin() {
             gameState.board[a] === gameState.board[b] && 
             gameState.board[a] === gameState.board[c]) {
             
-            // Highlight winning cells
             cells[a].classList.add('winning');
             cells[b].classList.add('winning');
             cells[c].classList.add('winning');
@@ -399,7 +368,7 @@ function handleGameEnd(message) {
     setTimeout(() => {
         showModal(gameOverModal);
         restartBtn.style.display = 'block';
-    }, 1000);
+    }, 1200);
 }
 
 // ===== TIMER SYSTEM =====
@@ -416,7 +385,6 @@ function startTimer() {
         gameState.timeLeft--;
         updateTimerDisplay();
         
-        // Warning di 5 detik terakhir
         if (gameState.timeLeft <= 5 && gameState.timeLeft > 0) {
             timerDisplay.classList.add('warning');
         }
@@ -424,11 +392,7 @@ function startTimer() {
         if (gameState.timeLeft <= 0) {
             stopTimer();
             playSound('timer');
-            
-            // Auto switch turn jika ada modal terbuka
-            if (themeModal.classList.contains('show')) {
-                handleAnswer(false);
-            }
+            showTimesUpModal();
         }
     }, 1000);
 }
@@ -443,9 +407,7 @@ function pauseTimer() {
 function stopTimer() {
     clearInterval(gameState.timerInterval);
     gameState.timerRunning = false;
-    gameState.timeLeft = 0;
     timerDisplay.classList.remove('warning');
-    updateTimerDisplay();
 }
 
 function updateTimerDisplay() {
@@ -458,8 +420,26 @@ startTimerBtn.onclick = startTimer;
 pauseTimerBtn.onclick = pauseTimer;
 resetTimerBtn.onclick = () => {
     stopTimer();
-    gameState.timeLeft = parseInt(timerInput.value) || 30;
+    gameState.timeLeft = 0;
     updateTimerDisplay();
+};
+
+// ===== TIME'S UP MODAL =====
+function showTimesUpModal() {
+    showModal(timesUpModal);
+}
+
+document.getElementById('timesUpOkBtn').onclick = () => {
+    hideModal(timesUpModal);
+    
+    // Auto handle answer as wrong if theme modal is open
+    if (themeModal.classList.contains('show')) {
+        handleAnswer(false);
+    } else {
+        // Just switch turn
+        updatePrompter('⏰', `Waktu habis untuk Tim ${gameState.currentPlayer}!`);
+        switchPlayer();
+    }
 };
 
 // ===== MODAL HELPERS =====
@@ -472,14 +452,13 @@ function hideModal(modal) {
 }
 
 function hideAllModals() {
-    [blindboxModal, themeModal, skillModal, gameOverModal].forEach(modal => {
+    [blindboxModal, themeModal, timesUpModal, gameOverModal].forEach(modal => {
         hideModal(modal);
     });
 }
 
 // ===== SOUND HELPER =====
 function playSound(soundName) {
-    // Clone audio untuk bisa play multiple times
     const sound = sounds[soundName].cloneNode();
     sound.play().catch(e => console.log('Audio play failed:', e));
 }
