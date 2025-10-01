@@ -3,7 +3,7 @@ let gameState = {
     board: ['', '', '', '', '', '', '', '', ''],
     currentPlayer: 'X',
     gameActive: true,
-    themes: ['Matematika', 'Tebak Bendera', 'Bahasa Inggris', 'IPA', 'Bahasa Indonesia', 'Tebak Ibukota', 'General', 'General', 'Tebak Bendera'],
+    themes: ['Matematika', 'Tebak Bendera', 'Bahasa Inggris', 'IPA', 'Bahasa Indonesia', 'Tebak Ibukota', 'General', 'General', 'Tebak Bendera', 'General', 'Tebak Bendera'],
     cellThemes: [],
     skillCells: [],
     playerSkills: { X: { count: 0, turnsLeft: 0 }, O: { count: 0, turnsLeft: 0 } },
