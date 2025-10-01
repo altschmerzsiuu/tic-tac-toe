@@ -12,24 +12,35 @@
         
         <!-- Info Game & Timer -->
         <div class="game-info">
-            <div class="team-display" id="teamX">
-                <span>Tim X</span>
-                <div class="skill-indicator" id="skillX"></div>
-            </div>
-            
-            <div class="timer-section">
-                <div class="timer-display" id="timerDisplay">00:00</div>
-                <div class="timer-controls">
-                    <input type="number" id="timerInput" placeholder="Detik" min="1" value="30">
-                    <button id="startTimer">▶️ Start</button>
-                    <button id="pauseTimer">⏸️ Pause</button>
-                    <button id="resetTimer">🔄 Reset</button>
+            <div class="team-box" id="teamXBox">
+                <div class="team-display" id="teamX">
+                    <div class="team-icon">✖️</div>
+                    <div class="team-label">Tim X</div>
+                </div>
+                <div class="skill-display" id="skillX">
+                    <div class="no-skill">Belum ada skill</div>
                 </div>
             </div>
             
-            <div class="team-display" id="teamO">
-                <span>Tim O</span>
-                <div class="skill-indicator" id="skillO"></div>
+            <div class="timer-section" id="timerSection">
+                <div class="current-turn" id="currentTurn">Giliran: Tim X</div>
+                <div class="timer-display" id="timerDisplay">00:00</div>
+                <div class="timer-controls">
+                    <input type="number" id="timerInput" placeholder="Detik" min="1" value="30">
+                    <button id="startTimer" title="Start">▶️</button>
+                    <button id="pauseTimer" title="Pause">⏸️</button>
+                    <button id="resetTimer" title="Reset">🔄</button>
+                </div>
+            </div>
+            
+            <div class="team-box" id="teamOBox">
+                <div class="team-display" id="teamO">
+                    <div class="team-icon">⭕</div>
+                    <div class="team-label">Tim O</div>
+                </div>
+                <div class="skill-display" id="skillO">
+                    <div class="no-skill">Belum ada skill</div>
+                </div>
             </div>
         </div>
 
@@ -46,32 +57,49 @@
             <div class="cell" data-index="8"></div>
         </div>
 
-        <!-- Tombol Skill (muncul kalau punya skill) -->
-        <div class="skill-buttons" id="skillButtons" style="display: none;">
-            <button id="useSkillBtn">⚡ Gunakan Skill</button>
-            <button id="skipSkillBtn">➡️ Lewati</button>
+        <!-- Skill Action Buttons -->
+        <div class="skill-action-buttons" id="skillActionButtons" style="display: none;">
+            <button class="skill-action-btn use-now" id="useSkillNowBtn">
+                <span class="btn-icon">⚡</span>
+                <span class="btn-text">Gunakan Skill</span>
+            </button>
+            <button class="skill-action-btn use-later" id="useSkillLaterBtn">
+                <span class="btn-icon">⏳</span>
+                <span class="btn-text">Nanti Dulu Deh</span>
+            </button>
+        </div>
+
+        <!-- Prompter (Status Update) -->
+        <div class="prompter" id="prompter">
+            <div class="prompter-icon">🎯</div>
+            <div class="prompter-text" id="prompterText">Selamat datang! Klik kolom untuk memulai...</div>
         </div>
 
         <!-- Tombol Main Lagi -->
         <button class="restart-btn" id="restartBtn" style="display: none;">🔄 Main Lagi</button>
-
-        <!-- Status Message -->
-        <div class="status-message" id="statusMsg"></div>
     </div>
 
-    <!-- Modal Blindbox -->
+    <!-- Modal Blindbox (2 kotak: Skill & Zonk) -->
     <div class="modal" id="blindboxModal">
         <div class="modal-content">
-            <h2>🎁 SKILL TERSEDIA! 🎁</h2>
-            <p>Pilih salah satu kotak:</p>
+            <h2>🎁 KOTAK MISTERI! 🎁</h2>
+            <p>Pilih salah satu kotak - beruntung atau zonk?</p>
             <div class="blindbox-container">
-                <div class="blindbox" data-skill="erase">
+                <div class="blindbox" data-result="skill">
                     <div class="box-front">📦</div>
-                    <div class="box-back">🗑️ Hapus Tanda</div>
+                    <div class="box-back">
+                        <div class="skill-icon">🗑️</div>
+                        <div class="skill-name">Hapus Tanda!</div>
+                        <div class="skill-desc">Hapus 1 tanda lawan</div>
+                    </div>
                 </div>
-                <div class="blindbox" data-skill="zonk">
+                <div class="blindbox" data-result="zonk">
                     <div class="box-front">📦</div>
-                    <div class="box-back">💥 ZONK!</div>
+                    <div class="box-back">
+                        <div class="skill-icon">💥</div>
+                        <div class="skill-name">ZONK!</div>
+                        <div class="skill-desc">Tidak dapat apa-apa</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -80,8 +108,9 @@
     <!-- Modal Tema -->
     <div class="modal" id="themeModal">
         <div class="modal-content">
-            <h2>📚 TEMA 📚</h2>
+            <h2>📚 TEMA PERTANYAAN 📚</h2>
             <div class="theme-display" id="themeDisplay"></div>
+            <p class="theme-instruction">Guru akan membacakan soal. Jawab dengan benar untuk mengisi kolom!</p>
             <div class="theme-buttons">
                 <button id="correctBtn">✅ Benar</button>
                 <button id="wrongBtn">❌ Salah</button>
@@ -89,12 +118,13 @@
         </div>
     </div>
 
-    <!-- Modal Skill Action -->
-    <div class="modal" id="skillModal">
-        <div class="modal-content">
-            <h2 id="skillModalTitle">⚡ GUNAKAN SKILL ⚡</h2>
-            <p id="skillModalText">Klik kolom yang ingin dikenai skill:</p>
-            <button id="cancelSkillBtn">❌ Batal</button>
+    <!-- Modal Time's Up -->
+    <div class="modal" id="timesUpModal">
+        <div class="modal-content timesup-content">
+            <div class="timesup-icon">⏰</div>
+            <h2>TIME'S UP!</h2>
+            <p>Waktu habis! Giliran berikutnya...</p>
+            <button id="timesUpOkBtn" class="timesup-btn">Iya Iya Tau! 😤</button>
         </div>
     </div>
 
