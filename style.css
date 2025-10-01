@@ -22,7 +22,7 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #82311a;
+    background: var(--gradient-bg);
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -63,8 +63,6 @@ body::before {
 }
 
 h1 {
-    font-family: 'Montserrat', sans-serif;
-    color: #DE603D;
     text-align: center;
     background: var(--gradient-bg);
     -webkit-background-clip: text;
@@ -242,9 +240,8 @@ h1 {
 }
 
 .timer-display {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #DE603D;
+    font-size: 2.8em;
+    font-weight: 800;
     background: var(--gradient-bg);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -287,16 +284,15 @@ h1 {
 }
 
 .timer-controls button {
-    padding: 8px 12px;
+    padding: 10px 14px;
     border: none;
     border-radius: 10px;
-    background: #DE603D;
-    color: #fff;
+    background: var(--gradient-bg);
+    color: white;
     cursor: pointer;
     font-weight: bold;
     transition: all 0.3s ease;
     font-size: 1em;
-    transition: 0.2s;
 }
 
 .timer-controls button:hover {
@@ -817,11 +813,11 @@ h1 {
     }
     
     h1 {
-        font-size: 2rem;
+        font-size: 1.8em;
     }
     
     .cell {
-        font-size: 2.5rem;
+        font-size: 2.5em;
     }
     
     .team-display {
