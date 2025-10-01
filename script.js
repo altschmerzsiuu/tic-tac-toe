@@ -15,6 +15,8 @@ let gameState = {
     turnCount: { X: 0, O: 0 }
 };
 
+let winSound = new Audio('./tenxi.mp3');
+
 // ===== SOUND EFFECTS =====
 const sounds = {
     click: new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3'),
@@ -540,6 +542,11 @@ document.getElementById('playAgainBtn').onclick = () => {
     hideModal(gameOverModal);
     init();
 };
+
+document.addEventListener('click', () => {
+  // setelah user klik di mana pun, audio boleh diputar
+  winSound.play();
+});
 
 function stopWinMusic() {
     sounds.win.pause();
