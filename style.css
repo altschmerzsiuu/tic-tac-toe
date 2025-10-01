@@ -647,12 +647,22 @@ h1 {
     transform: rotateY(0deg);
 }
 
-.blindbox.zonk .box-back {
-    background: linear-gradient(135deg, #ff6b6b 0%, #fa5252 100%);
+.blindbox.skill .box-back {
+    background: linear-gradient(135deg, #4CAF50, #2E7D32);
+    color: white;
+    border: 3px solid #81C784;
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.8);
+    transform: scale(1.05);
+    transition: all 0.3s ease-in-out;
 }
 
-.blindbox.skill .box-back {
-    background: linear-gradient(135deg, #51cf66 0%, #37b24d 100%);
+.blindbox.zonk .box-back {
+    background: linear-gradient(135deg, #e53935, #b71c1c);
+    color: white;
+    border: 3px solid #ef5350;
+    box-shadow: 0 0 15px rgba(229, 57, 53, 0.8);
+    transform: scale(1.05);
+    transition: all 0.3s ease-in-out;
 }
 
 /* ===== TEMA DISPLAY ===== */
