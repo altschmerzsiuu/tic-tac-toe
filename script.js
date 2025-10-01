@@ -55,6 +55,7 @@ const resetTimerBtn = document.getElementById('resetTimer');
 
 // ===== INITIALIZATION =====
 function init() {
+    stopWinMusic();
     gameState.board = ['', '', '', '', '', '', '', '', ''];
     gameState.currentPlayer = 'X';
     gameState.gameActive = true;
@@ -238,7 +239,7 @@ function handleAnswer(isCorrect) {
         // Check win
         if (checkWin()) {
             handleGameEnd(`🎉 TIM ${gameState.currentPlayer} MENANG! 🎉`);
-            playSound('win');
+            toggleWinMusic();
             return;
         }
         
@@ -459,16 +460,44 @@ function hideAllModals() {
 
 // ===== SOUND HELPER =====
 function playSound(soundName) {
-    const sound = sounds[soundName].cloneNode();
-    sound.play().catch(e => console.log('Audio play failed:', e));
+    if (soundName === 'win') {
+        sounds.win.currentTime = 0; // mulai dari awal
+        sounds.win.play().catch(e => console.log('Audio play failed:', e));
+    } else {
+        const sound = sounds[soundName].cloneNode();
+        sound.volume = sounds[soundName].volume;
+        sound.play().catch(e => console.log('Audio play failed:', e));
+    }
+}
+
+function toggleWinMusic() {
+    if (!sounds.win.paused) {
+        // Kalau sedang main → stop
+        sounds.win.pause();
+        sounds.win.currentTime = 0;
+    } else {
+        // Kalau sedang berhenti → mainkan dari awal
+        sounds.win.currentTime = 0;
+        sounds.win.play().catch(e => console.log('Audio play failed:', e));
+    }
 }
 
 // ===== RESTART =====
-restartBtn.onclick = init;
+restartBtn.onclick = () => {
+    stopWinMusic();
+    init();
+};
+
 document.getElementById('playAgainBtn').onclick = () => {
+    stopWinMusic();
     hideModal(gameOverModal);
     init();
 };
+
+function stopWinMusic() {
+    sounds.win.pause();
+    sounds.win.currentTime = 0;
+}
 
 // ===== START GAME =====
 init();
