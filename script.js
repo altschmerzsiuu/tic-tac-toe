@@ -15,14 +15,12 @@ let gameState = {
     turnCount: { X: 0, O: 0 }
 };
 
-let winSound = new Audio('./tenxi.mp3');
-
 // ===== SOUND EFFECTS =====
 const sounds = {
     click: new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3'),
     skill: new Audio('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3'),
     zonk: new Audio('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3'),
-    win: new Audio('./tenxi.mp3'),
+    win: new Audio('https://raw.githubusercontent.com/altschmerzsiuu/tic-tac-toe/main/tenxi.mp3'),
     timer: new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3')
 };
 
@@ -407,13 +405,6 @@ function checkWin() {
 function handleGameEnd(message) {
     gameState.gameActive = false;
     document.getElementById('winnerText').textContent = message;
-
-    // Play lagu sesuai pemenang
-    if (message.includes('TIM X')) {
-        sounds.winX.play();
-    } else if (message.includes('TIM O')) {
-        sounds.winO.play();
-    }
     
     setTimeout(() => {
         showModal(gameOverModal);
@@ -542,11 +533,6 @@ document.getElementById('playAgainBtn').onclick = () => {
     hideModal(gameOverModal);
     init();
 };
-
-document.addEventListener('click', () => {
-  // setelah user klik di mana pun, audio boleh diputar
-  winSound.play();
-});
 
 function stopWinMusic() {
     sounds.win.pause();
