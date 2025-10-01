@@ -193,7 +193,7 @@ function showBlindboxModal() {
 
             if (result === 'skill') {
                 gameState.playerSkills[gameState.currentPlayer].count++;
-                gameState.playerSkills[gameState.currentPlayer].turnsLeft += 3;
+                gameState.playerSkills[gameState.currentPlayer].turnsLeft += 2;
                 updatePrompter('🎯', `Tim ${gameState.currentPlayer} mendapat skill Hapus Tanda! 🗑️`);
                 playSound('skill');
                 box.classList.add('skill'); // 🌟 highlight hijau (akan kita styling di CSS)
