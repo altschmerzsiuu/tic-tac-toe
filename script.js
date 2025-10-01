@@ -3,7 +3,7 @@ let gameState = {
     board: ['', '', '', '', '', '', '', '', ''],
     currentPlayer: 'X',
     gameActive: true,
-    themes: ['Matematika', 'Tebak Bendera', 'Bahasa Inggris', 'IPA', 'Bahasa Indonesia'],
+    themes: ['Matematika', 'Tebak Bendera', 'Bahasa Inggris', 'IPA', 'Bahasa Indonesia', 'Tebak Ibukota', 'General', 'General', 'Tebak Bendera'],
     cellThemes: [],
     skillCells: [],
     playerSkills: { X: { count: 0, turnsLeft: 0 }, O: { count: 0, turnsLeft: 0 } },
@@ -43,7 +43,8 @@ const useSkillNowBtn = document.getElementById('useSkillNowBtn');
 const useSkillLaterBtn = document.getElementById('useSkillLaterBtn');
 
 // Modals
-const blindboxModal = document.getElementById('blindboxModal');
+const blindboxModal = document.getElementById("blindboxModal");
+const blindboxes = document.querySelectorAll(".blindbox");
 const themeModal = document.getElementById('themeModal');
 const timesUpModal = document.getElementById('timesUpModal');
 const gameOverModal = document.getElementById('gameOverModal');
@@ -160,22 +161,59 @@ function handleCellClick(e) {
 
 function showBlindboxModal() {
     const boxes = document.querySelectorAll('.blindbox');
-    
     boxes.forEach(box => {
         box.classList.remove('flipped', 'zonk', 'skill');
         box.style.pointerEvents = 'auto';
     });
-    
-    // Shuffle 2 boxes: erase & zonk
-    const results = shuffleArray(['erase', 'zonk']);
+
+    const results = shuffleArray(['skill', 'zonk']);
+
     boxes.forEach((box, i) => {
         box.dataset.result = results[i];
+
+        const back = box.querySelector('.box-back');
+        if (results[i] === 'skill') {
+            back.innerHTML = `
+                <div class="skill-icon">🗑️</div>
+                <div class="skill-name">Hapus Tanda!</div>
+                <div class="skill-desc">Hapus 1 tanda lawan</div>
+            `;
+        } else {
+            back.innerHTML = `
+                <div class="skill-icon">💥</div>
+                <div class="skill-name">ZONK!</div>
+                <div class="skill-desc">Tidak dapat apa-apa</div>
+            `;
+        }
     });
-    
+
     boxes.forEach(box => {
-        box.onclick = () => handleBlindboxClick(box);
+        box.onclick = () => {
+            const result = box.dataset.result;
+
+            if (result === 'skill') {
+                gameState.playerSkills[gameState.currentPlayer].count++;
+                gameState.playerSkills[gameState.currentPlayer].turnsLeft += 3;
+                updatePrompter('🎯', `Tim ${gameState.currentPlayer} mendapat skill Hapus Tanda! 🗑️`);
+                playSound('skill');
+                box.classList.add('skill'); // 🌟 highlight hijau (akan kita styling di CSS)
+            } else {
+                updatePrompter('💥', `Tim ${gameState.currentPlayer} mendapat ZONK! 😵`);
+                playSound('zonk');
+                box.classList.add('zonk');
+            }
+
+            box.classList.add('flipped');
+            boxes.forEach(b => (b.style.pointerEvents = 'none'));
+
+            // ⏱️ Delay 2 detik biar penonton sempat melihat hasilnya
+            setTimeout(() => {
+                hideModal(blindboxModal);
+                showThemeModal(gameState.currentCell);
+            }, 2000); // ← ubah angka ini kalau mau delay lebih lama/lebih cepat
+        };
     });
-    
+
     showModal(blindboxModal);
 }
 
@@ -198,7 +236,7 @@ function handleBlindboxClick(box) {
             playSound('skill');
             // Add skill with 2 turns
             gameState.playerSkills[gameState.currentPlayer].count++;
-            gameState.playerSkills[gameState.currentPlayer].turnsLeft += 2;
+            gameState.playerSkills[gameState.currentPlayer].turnsLeft += 3;
             updatePrompter('⚡', `Tim ${gameState.currentPlayer} mendapat skill Hapus Tanda! Ready to fire! 🔥`);
         }
         
@@ -367,6 +405,13 @@ function checkWin() {
 function handleGameEnd(message) {
     gameState.gameActive = false;
     document.getElementById('winnerText').textContent = message;
+
+    // Play lagu sesuai pemenang
+    if (message.includes('TIM X')) {
+        sounds.winX.play();
+    } else if (message.includes('TIM O')) {
+        sounds.winO.play();
+    }
     
     setTimeout(() => {
         showModal(gameOverModal);
