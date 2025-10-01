@@ -24,6 +24,8 @@ const sounds = {
     timer: new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3')
 };
 
+sounds.win.loop = true;
+
 Object.values(sounds).forEach(sound => sound.volume = 1.0);
 
 // ===== DOM ELEMENTS =====
