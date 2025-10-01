@@ -1,17 +1,28 @@
 /* ===== WARNA AESTHETIC: Ganti warna di sini sesuai selera ===== */
 :root {
-    --gradient-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --gradient-x: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    --gradient-o: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    /* GRADIENT UTAMA (Dulu Biru/Ungu, Sekarang Hangat/Terracotta) */
+    --gradient-bg: linear-gradient(135deg, #DE603D 0%, #A95A40 100%);
+    
+    /* GRADIENT TIM X (Dulu Biru Muda, Sekarang Terracotta/Oranye) */
+    --gradient-x: linear-gradient(135deg, #DE603D 0%, #FF9966 100%); 
+    
+    /* GRADIENT TIM O (Dulu Pink/Kuning, Sekarang Mustard/Emas) */
+    --gradient-o: linear-gradient(135deg, #DAA520 0%, #FFCC00 100%);
+    
     --glass-bg: rgba(255, 255, 255, 0.15);
     --glass-border: rgba(255, 255, 255, 0.25);
     --white: #ffffff;
     --dark-text: #2c3e50;
-    --success-green: #51cf66;
-    --zonk-red: #ff6b6b;
+    
+    /* WARNA STATUS BARU */
+    --success-green: #6B8E23; /* Hijau Zaitun (Olive) */
+    --zonk-red: #A93226; /* Merah Bata Tua */
+    
     --shadow: rgba(0, 0, 0, 0.1);
-    --glow-blue: rgba(79, 172, 254, 0.6);
-    --glow-pink: rgba(250, 112, 154, 0.6);
+    
+    /* WARNA GLOW BARU (untuk X dan O) */
+    --glow-blue: rgba(222, 96, 61, 0.6); /* Glow Oranye-Merah */
+    --glow-pink: rgba(218, 165, 32, 0.7); /* Glow Mustard */
 }
 
 * {
@@ -22,7 +33,7 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: var(--gradient-bg);
+    background: #A95A40; /* Ganti dari #82311a ke Merah Bata yang lebih halus */
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -51,6 +62,7 @@ body::before {
 }
 
 .container {
+    color: #DE603D;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
     border-radius: 30px;
@@ -63,11 +75,13 @@ body::before {
 }
 
 h1 {
+    font-family: 'Montserrat', sans-serif;
+    color: #DE603D;
     text-align: center;
-    background: var(--gradient-bg);
+    /* background: var(--gradient-bg);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    background-clip: text;
+    background-clip: text; */
     margin-bottom: 25px;
     font-size: 2.2em;
     font-weight: 800;
@@ -184,15 +198,15 @@ h1 {
 }
 
 .skill-display.has-skill {
-    background: linear-gradient(135deg, #51cf66 0%, #37b24d 100%);
+    background: linear-gradient(135deg, var(--success-green) 0%, #4D691A 100%); /* Menggunakan Olive Green */
     color: white;
-    box-shadow: 0 8px 20px rgba(81, 207, 102, 0.4);
+    box-shadow: 0 8px 20px rgba(107, 142, 35, 0.4); /* Disesuaikan dengan Olive Green */
     animation: skillGlow 2s ease-in-out infinite;
 }
 
 @keyframes skillGlow {
-    0%, 100% { box-shadow: 0 8px 20px rgba(81, 207, 102, 0.4); }
-    50% { box-shadow: 0 8px 30px rgba(81, 207, 102, 0.6); }
+    0%, 100% { box-shadow: 0 8px 20px rgba(107, 142, 35, 0.4); }
+    50% { box-shadow: 0 8px 30px rgba(107, 142, 35, 0.6); }
 }
 
 .skill-icon-display {
@@ -233,6 +247,7 @@ h1 {
 }
 
 .current-turn {
+    font-family: 'montserat', sans-serif;
     font-weight: 700;
     color: var(--dark-text);
     margin-bottom: 10px;
@@ -240,8 +255,9 @@ h1 {
 }
 
 .timer-display {
-    font-size: 2.8em;
-    font-weight: 800;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #DE603D;
     background: var(--gradient-bg);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -284,15 +300,16 @@ h1 {
 }
 
 .timer-controls button {
-    padding: 10px 14px;
+    padding: 8px 12px;
     border: none;
     border-radius: 10px;
-    background: var(--gradient-bg);
-    color: white;
+    background: #DE603D;
+    color: #fff;
     cursor: pointer;
     font-weight: bold;
     transition: all 0.3s ease;
     font-size: 1em;
+    transition: 0.2s;
 }
 
 .timer-controls button:hover {
@@ -390,13 +407,13 @@ h1 {
 }
 
 .cell.x {
-    color: #4facfe;
-    text-shadow: 0 4px 15px var(--glow-blue);
+    color: #DE603D; /* Menggunakan warna X yang baru (Terracotta) */
+    text-shadow: 0 4px 15px var(--glow-blue); /* Glow Terracotta */
 }
 
 .cell.o {
-    color: #fa709a;
-    text-shadow: 0 4px 15px var(--glow-pink);
+    color: #DAA520; /* Menggunakan warna O yang baru (Mustard) */
+    text-shadow: 0 4px 15px var(--glow-pink); /* Glow Mustard */
 }
 
 .cell.winning {
@@ -648,19 +665,19 @@ h1 {
 }
 
 .blindbox.skill .box-back {
-    background: linear-gradient(135deg, #4CAF50, #2E7D32);
+    background: linear-gradient(135deg, var(--success-green), #4D691A); /* Olive Green */
     color: white;
-    border: 3px solid #81C784;
-    box-shadow: 0 0 15px rgba(76, 175, 80, 0.8);
+    border: 3px solid #C3D59D;
+    box-shadow: 0 0 15px rgba(107, 142, 35, 0.8);
     transform: scale(1.05);
     transition: all 0.3s ease-in-out;
 }
 
 .blindbox.zonk .box-back {
-    background: linear-gradient(135deg, #e53935, #b71c1c);
+    background: linear-gradient(135deg, var(--zonk-red), #8B0000); /* Merah Bata Tua */
     color: white;
-    border: 3px solid #ef5350;
-    box-shadow: 0 0 15px rgba(229, 57, 53, 0.8);
+    border: 3px solid #D98880;
+    box-shadow: 0 0 15px rgba(169, 50, 38, 0.8);
     transform: scale(1.05);
     transition: all 0.3s ease-in-out;
 }
@@ -813,11 +830,11 @@ h1 {
     }
     
     h1 {
-        font-size: 1.8em;
+        font-size: 2rem;
     }
     
     .cell {
-        font-size: 2.5em;
+        font-size: 2.5rem;
     }
     
     .team-display {
