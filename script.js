@@ -20,11 +20,11 @@ const sounds = {
     click: new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3'),
     skill: new Audio('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3'),
     zonk: new Audio('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3'),
-    win: new Audio('https://github.com/altschmerzsiuu/tic-tac-toe/blob/main/tenxi.mp3?raw=true'),
+    win: new Audio('https://raw.githubusercontent.com/altschmerzsiuu/tic-tac-toe/main/tenxi.mp3'),
     timer: new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3')
 };
 
-Object.values(sounds).forEach(sound => sound.volume = 0.3);
+Object.values(sounds).forEach(sound => sound.volume = 1.0);
 
 // ===== DOM ELEMENTS =====
 const cells = document.querySelectorAll('.cell');
