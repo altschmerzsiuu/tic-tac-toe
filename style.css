@@ -9,8 +9,8 @@
     /* GRADIENT TIM O (Dulu Pink/Kuning, Sekarang Mustard/Emas) */
     --gradient-o: linear-gradient(135deg, #DAA520 0%, #FFCC00 100%);
     
-    --glass-bg: rgba(255, 255, 255, 0.15);
-    --glass-border: rgba(255, 255, 255, 0.25);
+    --glass-bg: rgba(255, 255, 255, 0.65);
+    --glass-border: rgba(170, 82, 82, 0.25);
     --white: #ffffff;
     --dark-text: #2c3e50;
     
