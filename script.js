@@ -26,7 +26,7 @@ const sounds = {
     timer: new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3')
 };
 // placeholder for countdown (you'll replace with your github raw url)
-const countdownSound = new Audio('https://raw.githubusercontent.com/altschmerzsiuu/tic-tac-toe/main/new.mp3'); // <-- replace this path with your GitHub URL
+const countdownSound = new Audio(''); // <-- replace this path with your GitHub URL
 countdownSound.volume = 1.0;
 
 document.addEventListener('click', () => {
