@@ -412,8 +412,8 @@ h1 {
 }
 
 .cell.o {
-    color: #DAA520; /* Menggunakan warna O yang baru (Mustard) */
-    text-shadow: 0 4px 15px var(--glow-pink); /* Glow Mustard */
+    color: #483d23; /* Menggunakan warna O yang baru (Mustard) */
+    text-shadow: 0 4px 15px 483d23; /* Glow Mustard */
 }
 
 .cell.winning {
