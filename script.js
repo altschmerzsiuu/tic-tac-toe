@@ -559,7 +559,7 @@ function runClosingGimmick(originalMessage) {
     stages.forEach((stageFn, idx) => {
         let id = setTimeout(stageFn, delay);
         stageTimeouts.push(id);
-        delay += idx === 2 ? 4000 : 2500;
+        delay += idx === 2 ? 6000 : 2500;
     });
 }
 
