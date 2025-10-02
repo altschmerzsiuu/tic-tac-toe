@@ -784,6 +784,26 @@ h1 {
     box-shadow: 0 12px 35px rgba(255, 146, 43, 0.6);
 }
 
+.cell-number {
+  font-size: 1.5rem;
+  color: rgba(14, 13, 13, 0.3); /* jadi 30% opacity */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+#confetti-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9999; /* lebih tinggi dari modal */
+}
+
 /* ===== GAME OVER ===== */
 .game-over {
     padding: 60px;
