@@ -516,16 +516,16 @@ function runClosingGimmick(originalMessage) {
             
         },
         () => { // STAGE 3 - Countdown
-            let count = 5;
+            let count = 3;
             winnerTextEl.innerHTML = `<div style="font-size: 4rem; font-weight: bold;">${count}</div>`;
+            try { 
+                countdownSound.currentTime = 0; 
+                countdownSound.play().catch(()=>{}); 
+            } catch(e) {}
             const countdownInterval = setInterval(() => {
                 count--;
                 if (count >= 0) {
                     winnerTextEl.innerHTML = `<div style="font-size: 4rem; font-weight: bold;">${count}</div>`;
-                    try { 
-                        countdownSound.currentTime = 0; 
-                        countdownSound.play().catch(()=>{}); 
-                    } catch(e) {}
                 } else {
                     clearInterval(countdownInterval);
                     // ✅ setelah selesai countdown, lanjut ke stage 4
@@ -559,7 +559,7 @@ function runClosingGimmick(originalMessage) {
     stages.forEach((stageFn, idx) => {
         let id = setTimeout(stageFn, delay);
         stageTimeouts.push(id);
-        delay += idx === 2 ? 6000 : 2500;
+        delay += idx === 2 ? 4000 : 2500;
     });
 }
 
