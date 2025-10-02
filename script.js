@@ -522,11 +522,14 @@ function runClosingGimmick(originalMessage) {
                 count--;
                 if (count >= 0) {
                     winnerTextEl.innerHTML = `<div style="font-size: 4rem; font-weight: bold;">${count}</div>`;
-                    try { countdownSound.currentTime = 0; countdownSound.play().catch(()=>{}); } catch(e){}
+                    try { 
+                        countdownSound.currentTime = 0; 
+                        countdownSound.play().catch(()=>{}); 
+                    } catch(e) {}
                 } else {
                     clearInterval(countdownInterval);
-                    // HAPUS ini:
-                    // stages[3]();
+                    // ✅ setelah selesai countdown, lanjut ke stage 4
+                    stages[3]();
                 }
             }, 1000);
         },
