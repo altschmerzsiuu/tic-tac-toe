@@ -31,6 +31,15 @@ countdownSound.volume = 1.0;
 
 document.addEventListener('click', () => {
     try {
+        countdownSound.play().then(() => {
+            countdownSound.pause();
+            countdownSound.currentTime = 0;
+        }).catch(()=>{});
+    } catch(e){}
+}, { once: true });
+
+document.addEventListener('click', () => {
+    try {
         sounds.win.play().then(() => {
             sounds.win.pause();
             sounds.win.currentTime = 0;
