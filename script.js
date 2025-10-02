@@ -26,8 +26,17 @@ const sounds = {
     timer: new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3')
 };
 // placeholder for countdown (you'll replace with your github raw url)
-const countdownSound = new Audio("sounds/countdown.mp3"); // <-- replace this path with your GitHub URL
+const countdownSound = new Audio('https://raw.githubusercontent.com/altschmerzsiuu/tic-tac-toe/main/new.mp3'); // <-- replace this path with your GitHub URL
 countdownSound.volume = 1.0;
+
+document.addEventListener('click', () => {
+    try {
+        sounds.win.play().then(() => {
+            sounds.win.pause();
+            sounds.win.currentTime = 0;
+        }).catch(()=>{});
+    } catch(e){}
+}, { once: true });
 
 sounds.win.loop = true;
 Object.values(sounds).forEach(sound => sound.volume = 1.0);
@@ -519,12 +528,12 @@ function runClosingGimmick(originalMessage) {
                     // HAPUS ini:
                     // stages[3]();
                 }
-            }, 500);
+            }, 1000);
         },
         () => { // STAGE 4 - Tombol main lagi
             winnerTextEl.innerHTML = `
                 <div style="font-size: 2rem; margin-bottom: 15px;">🎊 Waktunya bersenang-senang 🎊</div>
-                <div style="font-size: 1.4rem;">Klik tombol di bawah buat ronde berikutnya!</div>
+                <div style="font-size: 0.7rem;">Klik tombol di bawah buat ronde berikutnya!</div>
             `;
             restartBtn.style.display = "block";
             launchConfettiLoop();
