@@ -895,3 +895,12 @@ h1 {
         font-size: 1em;
     }
 }
+
+@media (prefers-color-scheme: dark) {
+    .team-display.active .team-label {
+        color: #fff !important;
+    }
+    .team-display .team-label {
+        color: var(--dark-text) !important;
+    }
+}
