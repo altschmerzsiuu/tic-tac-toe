@@ -532,7 +532,7 @@ function runClosingGimmick(originalMessage) {
         },
         () => { // STAGE 4 - Tombol main lagi
             winnerTextEl.innerHTML = `
-                <div style="font-size: 2rem; margin-bottom: 15px;">🎊 Waktunya bersenang-senang 🎊</div>
+                <div style="font-size: 1.5rem; margin-bottom: 15px;">🎊 Waktunya bersenang-senang 🎊</div>
                 <div style="font-size: 0.7rem;">Klik tombol di bawah buat ronde berikutnya!</div>
             `;
             restartBtn.style.display = "block";
