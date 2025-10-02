@@ -516,7 +516,7 @@ function runClosingGimmick(originalMessage) {
             
         },
         () => { // STAGE 3 - Countdown
-            let count = 3;
+            let count = 5;
             winnerTextEl.innerHTML = `<div style="font-size: 4rem; font-weight: bold;">${count}</div>`;
             const countdownInterval = setInterval(() => {
                 count--;
