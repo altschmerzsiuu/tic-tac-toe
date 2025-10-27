@@ -3,15 +3,13 @@ let gameState = {
     board: ['', '', '', '', '', '', '', '', ''],
     currentPlayer: 'X',
     gameActive: true,
-    themes: ['Matematika', 'Tebak Bendera', 'Bahasa Inggris', 'IPA', 'Bahasa Indonesia', 'Tebak Ibukota', 'General', 'General', 'Tebak Bendera', 'General', 'Tebak Bendera'],
+    themes: ['Definisi', 'Struktur', 'Tujuan', 'Sinonim', 'Antonim', 'General', 'General', 'Sinonim', 'Definisi', 'General', 'Antonim'],
     cellThemes: [],
     skillCells: [],
     playerSkills: { X: { count: 0, turnsLeft: 0 }, O: { count: 0, turnsLeft: 0 } },
     pendingSkillValidation: { X: false, O: false }, // ← new: apakah skill baru didapat dan perlu dipantau
     currentCell: null,
-    timerInterval: null,
-    timeLeft: 0,
-    timerRunning: false,
+    scores: { X: 0, O: 0 },
     waitingForSkillTarget: false,
     turnCount: { X: 0, O: 0 }
 };
@@ -22,8 +20,11 @@ const sounds = {
     click: new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3'),
     skill: new Audio('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3'),
     zonk: new Audio('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3'),
-    win: new Audio('https://raw.githubusercontent.com/altschmerzsiuu/tic-tac-toe/main/mejikuhibiniu.mp3'),
-    timer: new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3')
+    win: new Audio('https://github.com/altschmerzsiuu/tic-tac-toe/raw/refs/heads/main/assets/%20mejikuhibiniu.mp3'),
+    timer: new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3'),
+
+    win2: new Audio('https://github.com/altschmerzsiuu/tic-tac-toe/raw/refs/heads/main/assets/bintanglima.mp3'), // 👈 Ganti dengan link musik kedua
+    win3: new Audio('https://github.com/altschmerzsiuu/tic-tac-toe/raw/refs/heads/main/assets/kasihababa.mp3')
 };
 // placeholder for countdown (you'll replace with your github raw url)
 const countdownSound = new Audio('https://raw.githubusercontent.com/altschmerzsiuu/tic-tac-toe/main/cd.mp3');
@@ -68,15 +69,12 @@ const useSkillLaterBtn = document.getElementById('useSkillLaterBtn');
 const blindboxModal = document.getElementById("blindboxModal");
 const blindboxes = document.querySelectorAll(".blindbox");
 const themeModal = document.getElementById('themeModal');
-const timesUpModal = document.getElementById('timesUpModal');
 const gameOverModal = document.getElementById('gameOverModal');
 
-// Timer
-const timerDisplay = document.getElementById('timerDisplay');
-const timerInput = document.getElementById('timerInput');
-const startTimerBtn = document.getElementById('startTimer');
-const pauseTimerBtn = document.getElementById('pauseTimer');
-const resetTimerBtn = document.getElementById('resetTimer');
+// Scoreboard (GANTI TIMER)
+const scoreXDisplay = document.getElementById('scoreX'); // ← TAMBAH
+const scoreODisplay = document.getElementById('scoreO'); // ← TAMBAH
+const resetScoreBtn = document.getElementById('resetScoreBtn'); // ← TAMBAH
 
 // ===== INITIALIZATION =====
 function init() {
@@ -101,11 +99,37 @@ function init() {
     
     renderCells(); // <-- draw numbering or marks
     updateDisplay();
+    updateScoreDisplay(); // ← TAMBAH INI
     updatePrompter('🎯', 'Tim X memulai permainan! Klik kolom untuk bermain...');
     hideAllModals();
     skillActionButtons.style.display = 'none';
     restartBtn.style.display = 'none';
-    stopTimer();
+//     stopTimer();
+}
+
+// ===== UPDATE SCORE DISPLAY =====
+function updateScoreDisplay() {
+    scoreXDisplay.textContent = gameState.scores.X;
+    scoreODisplay.textContent = gameState.scores.O;
+}
+
+// 🎵 Function untuk pilih & mainkan lagu victory secara random
+function playRandomWinSong() {
+    const winSongs = [sounds.win, sounds.win2, sounds.win3];
+    const randomSong = winSongs[Math.floor(Math.random() * winSongs.length)];
+    
+    // Stop semua lagu dulu
+    winSongs.forEach(song => {
+        song.pause();
+        song.currentTime = 0;
+    });
+    
+    // Main lagu yang terpilih
+    currentWinSong = randomSong;
+    try {
+        randomSong.currentTime = 0;
+        randomSong.play().catch(()=>{});
+    } catch(e){}
 }
 
 // ===== RENDER CELLS (numbering + X/O) =====
@@ -329,6 +353,8 @@ function handleAnswer(isCorrect) {
         
         // Check win
         if (checkWin()) {
+            gameState.scores[player]++; // ← TAMBAH INI: increment score
+            updateScoreDisplay(); // ← TAMBAH INI
             handleGameEnd(`🎉 TIM ${player} MENANG! 🎉`);
             // Note: handleGameEnd will run the closing gimmick and play win music
             return;
@@ -524,38 +550,33 @@ function runClosingGimmick(originalMessage) {
             `;
             
         },
-        () => { // STAGE 3 - Countdown
-            let count = 3;
-            winnerTextEl.innerHTML = `<div style="font-size: 4rem; font-weight: bold;">${count}</div>`;
-            try { 
-                countdownSound.currentTime = 0; 
-                countdownSound.play().catch(()=>{}); 
-            } catch(e) {}
-            const countdownInterval = setInterval(() => {
-                count--;
-                if (count >= 0) {
-                    winnerTextEl.innerHTML = `<div style="font-size: 4rem; font-weight: bold;">${count}</div>`;
-                } else {
-                    clearInterval(countdownInterval);
-                    // ✅ setelah selesai countdown, lanjut ke stage 4
-                    stages[3]();
-                }
-            }, 1000);
-        },
-        () => { // STAGE 4 - Tombol main lagi
+        () => { // STAGE 3 - Waktunya bersenang-senang + MUSIK RANDOM
             winnerTextEl.innerHTML = `
                 <div style="font-size: 1.5rem; margin-bottom: 15px;">🎊 Waktunya bersenang-senang 🎊</div>
                 <div style="font-size: 0.7rem;">Klik tombol di bawah buat ronde berikutnya!</div>
             `;
             restartBtn.style.display = "block";
             launchConfettiLoop();
-            try { sounds.win.currentTime = 0; sounds.win.play().catch(()=>{}); } catch(e){}
+            playRandomWinSong(); // 🎵 Mainkan lagu random dari 3 lagu
         },
-        () => { // STAGE 5 - Tombol main lagi
+        () => { // STAGE 5 - Video
             winnerTextEl.innerHTML = `
-                <div style="font-size: 3rem; margin-bottom: 15px;">STANDUP EVERIBADII!!</div>
-                <div style="font-size: 0.7rem;">Klik tombol di bawah buat ronde berikutnya!</div>
+                <div style="font-size: 3rem; margin-bottom: 20px; font-weight: bold;">STANDUP EVERIBADII!!</div>
+                <video 
+                    autoplay 
+                    loop 
+                    muted 
+                    playsinline 
+                    style="width: 400px; height: 400px; border-radius: 20px; object-fit: cover; margin-bottom: 20px;">
+                    <source src="TARUH_LINK_VIDEO_DISINI.mp4" type="video/mp4">
+                    <!-- 👆 GANTI dengan link video kamu (format .mp4 atau .webm) -->
+                    Video tidak bisa dimuat.
+                </video>
+                <div style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">
+                    Klik tombol di bawah buat ronde berikutnya!
+                </div>
             `;
+            restartBtn.style.display = "block";
         }
     ];
 
@@ -627,78 +648,6 @@ document.getElementById('restartBtn').addEventListener('click', () => {
     if (canvas) canvas.remove();
 });
 
-
-// ===== TIMER SYSTEM =====
-function startTimer() {
-    const seconds = parseInt(timerInput.value) || 30;
-    
-    if (gameState.timerRunning) return;
-    
-    gameState.timeLeft = seconds;
-    gameState.timerRunning = true;
-    updateTimerDisplay();
-    
-    gameState.timerInterval = setInterval(() => {
-        gameState.timeLeft--;
-        updateTimerDisplay();
-        
-        if (gameState.timeLeft <= 5 && gameState.timeLeft > 0) {
-            timerDisplay.classList.add('warning');
-        }
-        
-        if (gameState.timeLeft <= 0) {
-            stopTimer();
-            playSound('timer');
-            showTimesUpModal();
-        }
-    }, 1000);
-}
-
-function pauseTimer() {
-    if (!gameState.timerRunning) return;
-    
-    clearInterval(gameState.timerInterval);
-    gameState.timerRunning = false;
-}
-
-function stopTimer() {
-    clearInterval(gameState.timerInterval);
-    gameState.timerRunning = false;
-    timerDisplay.classList.remove('warning');
-}
-
-function updateTimerDisplay() {
-    const minutes = Math.floor(gameState.timeLeft / 60);
-    const seconds = gameState.timeLeft % 60;
-    timerDisplay.textContent = `${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
-}
-
-startTimerBtn.onclick = startTimer;
-pauseTimerBtn.onclick = pauseTimer;
-resetTimerBtn.onclick = () => {
-    stopTimer();
-    gameState.timeLeft = 0;
-    updateTimerDisplay();
-};
-
-// ===== TIME'S UP MODAL =====
-function showTimesUpModal() {
-    showModal(timesUpModal);
-}
-
-document.getElementById('timesUpOkBtn').onclick = () => {
-    hideModal(timesUpModal);
-    
-    // Auto handle answer as wrong if theme modal is open
-    if (themeModal.classList.contains('show')) {
-        handleAnswer(false);
-    } else {
-        // Just switch turn
-        updatePrompter('⏰', `Waktu habis untuk Tim ${gameState.currentPlayer}!`);
-        switchPlayer();
-    }
-};
-
 // ===== MODAL HELPERS =====
 function showModal(modal) {
     modal.classList.add('show');
@@ -709,7 +658,7 @@ function hideModal(modal) {
 }
 
 function hideAllModals() {
-    [blindboxModal, themeModal, timesUpModal, gameOverModal].forEach(modal => {
+    [blindboxModal, themeModal, gameOverModal].forEach(modal => {
         hideModal(modal);
     });
 }
@@ -748,17 +697,6 @@ function restartGame() {
     init();                  // mulai game baru
 }
 
-// restartBtn.onclick = () => {
-//     stopWinMusic();
-//     init();
-// };
-
-// document.getElementById('playAgainBtn').onclick = () => {
-//     stopWinMusic();
-//     hideModal(gameOverModal);
-//     init();
-// };
-
 restartBtn.onclick = restartGame;
 document.getElementById('playAgainBtn').onclick = restartGame;
 
@@ -778,11 +716,21 @@ function playWinMusic() {
 function stopWinMusic() {
     confettiActive = false;
     winMusicPlaying = false; // reset flag
-    try { 
-        sounds.win.pause(); 
-        sounds.win.currentTime = 0; 
-    } catch(e){}
+    
+    // 💡 SOLUSI: Hentikan SEMUA lagu kemenangan
+    const winSongs = [sounds.win, sounds.win2, sounds.win3];
+    winSongs.forEach(song => {
+        try { 
+            song.pause(); 
+            song.currentTime = 0; 
+        } catch(e){}
+    });
 }
 
-// ===== START GAME =====
+// ===== START GAME & RESET SCORE BUTTON =====
+resetScoreBtn.onclick = () => {
+    gameState.scores = { X: 0, O: 0 };
+    updateScoreDisplay();
+    updatePrompter('🔄', 'Skor direset! Siap untuk pertandingan baru!');
+};
 init();
