@@ -27,14 +27,21 @@
                 </div>
             </div>
             
-            <div class="timer-section" id="timerSection">
+            <div class="scoreboard-section" id="scoreboardSection">
                 <div class="current-turn" id="currentTurn">GILIRAN: TIM X</div>
-                <div class="timer-display" id="timerDisplay">00:00</div>
-                <div class="timer-controls">
-                    <input type="number" id="timerInput" placeholder="Detik" min="1" value="30">
-                    <button id="startTimer" title="Start">▶️</button>
-                    <button id="pauseTimer" title="Pause">⏸️</button>
-                    <button id="resetTimer" title="Reset">🔄</button>
+                <div class="score-display">
+                    <div class="score-item score-x">
+                        <div class="score-number" id="scoreX">0</div>
+                        <div class="score-label">Tim X</div>
+                    </div>
+                    <div class="score-separator">-</div>
+                    <div class="score-item score-o">
+                        <div class="score-number" id="scoreO">0</div>
+                        <div class="score-label">Tim O</div>
+                    </div>
+                </div>
+                <div class="score-controls">
+                    <button class="score-btn" id="resetScoreBtn" title="Reset Skor">🔄 Reset</button>
                 </div>
             </div>
             
@@ -130,16 +137,6 @@
                 <button id="correctBtn">✅ Benar</button>
                 <button id="wrongBtn">❌ Salah</button>
             </div>
-        </div>
-    </div>
-
-    <!-- Modal Time's Up -->
-    <div class="modal" id="timesUpModal">
-        <div class="modal-content timesup-content">
-            <div class="timesup-icon">⏰</div>
-            <h2>TIME'S UP!</h2>
-            <p>Waktu habis! Giliran berikutnya...</p>
-            <button id="timesUpOkBtn" class="timesup-btn">Iya Iya Tau! 😤</button>
         </div>
     </div>
 
