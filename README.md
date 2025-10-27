@@ -1,6 +1,6 @@
 # 🎮 THINK-TAC-TOE
 
-**Tic-Tac-Toe meets Quiz Game!** Sebuah game edukatif interaktif yang menggabungkan strategi Tic-Tac-Toe klasik dengan sistem pertanyaan berbasis tema.
+**Tic-Tac-Toe meets Quiz Game!** An interactive educational game that combines classic Tic-Tac-Toe strategy with theme-based question system.
 
 ![Game Preview](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
@@ -12,49 +12,50 @@
 ## 🌟 Features
 
 ### 🎯 Core Gameplay
-- **Traditional Tic-Tac-Toe** dengan twist edukatif
-- **Theme-Based Questions** - Setiap kotak memiliki tema pertanyaan (Definisi, Sinonim, Antonim, dll)
-- **Turn-Based System** - Tim X vs Tim O dengan giliran yang fair
-- **Win Detection** - Otomatis deteksi pemenang dengan animasi
+- **Traditional Tic-Tac-Toe** with an educational twist
+- **Theme-Based Questions** - Each cell has a question theme (Definition, Synonym, Antonym, etc.)
+- **Turn-Based System** - Team X vs Team O with fair turn rotation
+- **Win Detection** - Automatic winner detection with celebration animations
 
 ### ⚡ Skill System
-- **Mystery Boxes** - Kotak misteri dengan 2 kemungkinan:
-  - 🗑️ **Hapus Tanda** - Skill untuk menghapus 1 tanda lawan
-  - 💥 **ZONK** - Tidak dapat apa-apa
-- **Skill Expiration** - Skill berlaku selama 2 giliran
-- **Strategic Gameplay** - Pilih kapan menggunakan skill dengan bijak
+- **Mystery Boxes** - Special cells with 2 possible outcomes:
+  - 🗑️ **Erase Mark** - Skill to remove 1 opponent's mark
+  - 💥 **ZONK** - Get nothing
+- **Skill Expiration** - Skills last for 2 turns
+- **Strategic Gameplay** - Choose when to use skills wisely
+- **Skill Validation** - Newly acquired skills are canceled if the next answer is wrong
 
 ### 📊 Scoreboard
-- **Real-time Score Tracking** - Skor Tim X vs Tim O yang selalu update
-- **Persistent Scores** - Skor tetap tersimpan antar ronde
-- **Reset Score** - Tombol untuk mereset skor kapan saja
+- **Real-time Score Tracking** - Live score updates for Team X vs Team O
+- **Persistent Scores** - Scores remain across multiple rounds
+- **Reset Score** - Button to reset scores anytime
 
 ### 🎨 Visual & Audio
-- **Modern Glassmorphism Design** - UI yang aesthetic dengan efek blur
-- **Smooth Animations** - Transisi halus di setiap interaksi
-- **Confetti Effect** - Efek perayaan saat menang menggunakan canvas-confetti
-- **Victory Music** - 3 lagu kemenangan random yang diputar saat menang
-- **Sound Effects** - SFX untuk setiap aksi (klik, skill, zonk, dll)
+- **Modern Glassmorphism Design** - Aesthetic UI with blur effects
+- **Smooth Animations** - Fluid transitions for every interaction
+- **Confetti Effect** - Victory celebration using canvas-confetti
+- **Victory Music** - 3 random victory songs played on win
+- **Sound Effects** - SFX for every action (click, skill, zonk, etc.)
 
 ### 📱 Responsive Design
-- **Mobile Friendly** - Otomatis menyesuaikan layout untuk layar kecil
-- **Cross-browser Compatible** - Berjalan lancar di semua browser modern
+- **Mobile Friendly** - Auto-adjusting layout for small screens
+- **Cross-browser Compatible** - Runs smoothly on all modern browsers
 
 ---
 
 ## 🎮 How to Play
 
-1. **Mulai Game** - Tim X selalu memulai terlebih dahulu
-2. **Pilih Kotak** - Klik kotak untuk menjawab pertanyaan dengan tema tertentu
-3. **Jawab Pertanyaan** - Guru membacakan soal, jawab ✅ Benar atau ❌ Salah
-4. **Mystery Box** - Beberapa kotak berisi misteri box:
-   - Pilih salah satu kotak
-   - Dapatkan skill atau zonk
-5. **Gunakan Skill** - Jika dapat skill:
-   - ⚡ **Gunakan Skill** - Hapus tanda lawan sekarang
-   - ⏳ **Nanti Dulu Deh** - Simpan untuk giliran berikutnya
-6. **Menangkan Game** - Susun 3 tanda secara horizontal, vertikal, atau diagonal
-7. **Tracking Score** - Skor otomatis bertambah saat menang
+1. **Start Game** - Team X always goes first
+2. **Select Cell** - Click a cell to answer a question with a specific theme
+3. **Answer Question** - Teacher reads the question, answer ✅ Correct or ❌ Wrong
+4. **Mystery Box** - Some cells contain mystery boxes:
+   - Choose one box
+   - Get a skill or zonk
+5. **Use Skill** - If you get a skill:
+   - ⚡ **Use Skill** - Remove opponent's mark immediately
+   - ⏳ **Save for Later** - Save for next turn
+6. **Win the Game** - Align 3 marks horizontally, vertically, or diagonally
+7. **Score Tracking** - Score automatically increments on win
 
 ---
 
@@ -67,10 +68,10 @@ cd think-tac-toe
 ```
 
 ### Run Locally
-Cukup buka file `index.html` di browser favorit kamu!
+Simply open `index.html` in your favorite browser!
 
 ```bash
-# Atau gunakan live server
+# Or use live server
 npx live-server
 ```
 
@@ -90,8 +91,8 @@ think-tac-toe/
 
 ## 🎨 Customization
 
-### Ubah Warna Tema
-Edit variabel CSS di bagian `:root` dalam `style.css`:
+### Change Theme Colors
+Edit CSS variables in the `:root` section of `style.css`:
 
 ```css
 :root {
@@ -101,21 +102,21 @@ Edit variabel CSS di bagian `:root` dalam `style.css`:
 }
 ```
 
-### Tambah/Ubah Tema Pertanyaan
-Edit array `themes` di `script.js`:
+### Add/Modify Question Themes
+Edit the `themes` array in `script.js`:
 
 ```javascript
-themes: ['Definisi', 'Struktur', 'Tujuan', 'Sinonim', 'Antonim', 'General']
+themes: ['Definition', 'Structure', 'Purpose', 'Synonym', 'Antonym', 'General']
 ```
 
-### Ganti Musik Kemenangan
-Upload musik ke GitHub repository kamu dan update di `script.js`:
+### Replace Victory Music
+Upload your music to GitHub repository and update in `script.js`:
 
 ```javascript
 const sounds = {
-    win: new Audio('link-musik-1.mp3'),
-    win2: new Audio('link-musik-2.mp3'),
-    win3: new Audio('link-musik-3.mp3')
+    win: new Audio('your-music-link-1.mp3'),
+    win2: new Audio('your-music-link-2.mp3'),
+    win3: new Audio('your-music-link-3.mp3')
 };
 ```
 
@@ -138,42 +139,30 @@ const sounds = {
 ## 🎯 Game Rules
 
 ### Winning Conditions
-- Susun 3 tanda (X atau O) secara:
-  - **Horizontal** - Baris 1, 2, atau 3
-  - **Vertikal** - Kolom 1, 2, atau 3
-  - **Diagonal** - Kiri-atas ke kanan-bawah atau kanan-atas ke kiri-bawah
+- Align 3 marks (X or O) in:
+  - **Horizontal** - Row 1, 2, or 3
+  - **Vertical** - Column 1, 2, or 3
+  - **Diagonal** - Top-left to bottom-right or top-right to bottom-left
 
 ### Draw Condition
-- Semua kotak terisi tanpa ada pemenang
+- All cells are filled without a winner
 
 ### Skill Rules
-- Skill **Hapus Tanda** berlaku selama **2 giliran**
-- Jika tidak digunakan dalam 2 giliran, skill expired
-- Skill yang baru didapat akan **dibatalkan** jika jawaban pertanyaan berikutnya **salah**
+- **Erase Mark** skill lasts for **2 turns**
+- If not used within 2 turns, skill expires
+- Newly acquired skills are **canceled** if the next question is answered **incorrectly**
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Silakan fork repository ini dan buat pull request.
+Contributions are welcome! Feel free to fork this repository and create a pull request.
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
 3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
-
----
-
-## 📝 Future Improvements
-
-- [ ] Mode multiplayer online
-- [ ] Leaderboard system
-- [ ] Lebih banyak variasi skill
-- [ ] AI opponent untuk single player
-- [ ] Timer per turn (optional)
-- [ ] Tema pertanyaan yang bisa dicustom
-- [ ] Save game state ke localStorage
 
 ---
 
@@ -186,8 +175,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 👨‍💻 Author
 
 **Your Name**
-- GitHub: [@yourusername](https://github.com/yourusername)
-- Email: your.email@example.com
+- GitHub: [@altschmerzsiuu](https://github.com/altschmerzsiuu)
+- Email: aditamaarsyi@gmail.com
 
 ---
 
@@ -196,6 +185,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Sound effects from [Mixkit](https://mixkit.co/)
 - Confetti library from [canvas-confetti](https://github.com/catdad/canvas-confetti)
 - Icons from [Bootstrap Icons](https://icons.getbootstrap.com/)
+- - Victory music by Indonesian Hip-Hop Artist
+  - [mejikuhibiniu - Tenxi, Jemsii, Suisei](https://open.spotify.com/track/278PwGlIm7MxVTZud18Rx4?si=dbff9a22a51e4ef6)
+  - [Bintang 5 - Tenxi, Jemsii](https://open.spotify.com/track/0HoWTALX2BktSIrSmflWSP?si=721b898fd69c4aef)
+  - [Kasih Aba-Aba - Naykilla, Tenxi, Jemsii](https://open.spotify.com/track/5rhwXZP0luMucnEPnYJpbI?si=bed5460dc1644ef8)
+- Victory video from [Source Name / Creator Name] (if applicable)
 - Inspired by classic Tic-Tac-Toe game
 
 ---
