@@ -189,7 +189,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
   - [mejikuhibiniu - Tenxi, Jemsii, Suisei](https://open.spotify.com/track/278PwGlIm7MxVTZud18Rx4?si=dbff9a22a51e4ef6)
   - [Bintang 5 - Tenxi, Jemsii](https://open.spotify.com/track/0HoWTALX2BktSIrSmflWSP?si=721b898fd69c4aef)
   - [Kasih Aba-Aba - Naykilla, Tenxi, Jemsii](https://open.spotify.com/track/5rhwXZP0luMucnEPnYJpbI?si=bed5460dc1644ef8)
-- Victory video from [Source Name / Creator Name] (if applicable)
 - Inspired by classic Tic-Tac-Toe game
 
 ---
@@ -197,13 +196,13 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📸 Screenshots
 
 ### Main Game
-![Main Game](screenshot-1.png)
+![Main Game](img/mainGame.png)
 
 ### Mystery Box
-![Mystery Box](screenshot-2.png)
+![Mystery Box](img/mysteryBox.png)
 
 ### Victory Screen
-![Victory Screen](screenshot-3.png)
+![Victory Screen](img/victoryScene.png)
 
 ---
 
