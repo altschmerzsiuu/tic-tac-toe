@@ -78,13 +78,21 @@ npx live-server
 ---
 
 ## 📁 Project Structure
-
 ```
 think-tac-toe/
-├── index.html          # Main HTML structure
-├── style.css           # Styling & animations
-├── script.js           # Game logic & interactions
-└── README.md           # Documentation
+├── assets/                 # Game assets
+│   ├── mejikuhibiniu.mp3   # Victory music 1
+│   ├── bintanglima.mp3     # Victory music 2
+│   ├── kasihababa.mp3      # Victory music 3
+│   └── cd.mp3              # Countdown sound
+├── img/                    # Image assets
+│   ├── mainGame.png        # Main game screenshot
+│   ├── mysteryBox.png      # Mystery box screenshot
+│   └── victoryScene.png    # Victory screen screenshot
+├── index.html              # Main HTML structure
+├── style.css               # Styling & animations
+├── script.js               # Game logic & interactions
+└── README.md               # Documentation
 ```
 
 ---
