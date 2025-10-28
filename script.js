@@ -35,8 +35,8 @@ document.addEventListener('click', () => {
         countdownSound.play().then(() => {
             countdownSound.pause();
             countdownSound.currentTime = 0;
-        }).catch(()=>{});
-    } catch(e){}
+        }).catch(() => { });
+    } catch (e) { }
 }, { once: true });
 
 document.addEventListener('click', () => {
@@ -44,8 +44,8 @@ document.addEventListener('click', () => {
         sounds.win.play().then(() => {
             sounds.win.pause();
             sounds.win.currentTime = 0;
-        }).catch(()=>{});
-    } catch(e){}
+        }).catch(() => { });
+    } catch (e) { }
 }, { once: true });
 
 sounds.win.loop = true;
@@ -86,17 +86,17 @@ function init() {
     gameState.pendingSkillValidation = { X: false, O: false };
     gameState.waitingForSkillTarget = false;
     gameState.turnCount = { X: 0, O: 0 };
-    
+
     gameState.cellThemes = shuffleArray([...gameState.themes, ...gameState.themes.slice(0, 4)]);
     gameState.skillCells = getRandomSkillCells();
-    
+
     cells.forEach((cell) => {
         cell.classList.remove('filled', 'blocked', 'winning', 'x', 'o', 'selecting');
         cell.dataset.index = cell.dataset.index; // keep
         cell.removeEventListener('click', handleCellClick); // safe remove
         cell.addEventListener('click', handleCellClick);
     });
-    
+
     renderCells(); // <-- draw numbering or marks
     updateDisplay();
     updateScoreDisplay(); // ← TAMBAH INI
@@ -104,7 +104,7 @@ function init() {
     hideAllModals();
     skillActionButtons.style.display = 'none';
     restartBtn.style.display = 'none';
-//     stopTimer();
+    //     stopTimer();
 }
 
 // ===== UPDATE SCORE DISPLAY =====
@@ -117,19 +117,19 @@ function updateScoreDisplay() {
 function playRandomWinSong() {
     const winSongs = [sounds.win, sounds.win2, sounds.win3];
     const randomSong = winSongs[Math.floor(Math.random() * winSongs.length)];
-    
+
     // Stop semua lagu dulu
     winSongs.forEach(song => {
         song.pause();
         song.currentTime = 0;
     });
-    
+
     // Main lagu yang terpilih
     currentWinSong = randomSong;
     try {
         randomSong.currentTime = 0;
-        randomSong.play().catch(()=>{});
-    } catch(e){}
+        randomSong.play().catch(() => { });
+    } catch (e) { }
 }
 
 // ===== RENDER CELLS (numbering + X/O) =====
@@ -138,7 +138,7 @@ function renderCells() {
         const mark = gameState.board[index];
         cell.classList.remove('filled', 'x', 'o');
         cell.classList.remove('winning'); // keep cleared outside if needed
-        
+
         if (mark === '') {
             // show numbering (1-9) centered
             cell.innerHTML = `<span class="cell-number">${index + 1}</span>`;
@@ -161,7 +161,7 @@ function shuffleArray(array) {
 }
 
 function getRandomSkillCells() {
-    const indices = [0,1,2,3,4,5,6,7,8];
+    const indices = [0, 1, 2, 3, 4, 5, 6, 7, 8];
     const shuffled = shuffleArray(indices);
     return shuffled.slice(0, 2);
 }
@@ -171,10 +171,10 @@ function updateDisplay() {
     teamXDisplay.classList.toggle('active', gameState.currentPlayer === 'X');
     teamODisplay.classList.toggle('active', gameState.currentPlayer === 'O');
     currentTurnDisplay.textContent = `Giliran: Tim ${gameState.currentPlayer}`;
-    
+
     updateSkillDisplay('X');
     updateSkillDisplay('O');
-    
+
     // Show/hide skill action buttons
     const currentSkill = gameState.playerSkills[gameState.currentPlayer];
     if (currentSkill.count > 0 && currentSkill.turnsLeft > 0 && !gameState.waitingForSkillTarget) {
@@ -187,7 +187,7 @@ function updateDisplay() {
 function updateSkillDisplay(player) {
     const skillDisplay = player === 'X' ? skillXDisplay : skillODisplay;
     const skill = gameState.playerSkills[player];
-    
+
     if (skill.count > 0 && skill.turnsLeft > 0) {
         skillDisplay.className = 'skill-display has-skill';
         skillDisplay.innerHTML = `
@@ -210,16 +210,16 @@ function updatePrompter(icon, message) {
 // ===== CELL CLICK HANDLER =====
 function handleCellClick(e) {
     if (!gameState.gameActive || gameState.waitingForSkillTarget) return;
-    
+
     const index = parseInt(e.currentTarget.dataset.index, 10);
-    
+
     if (gameState.board[index] !== '' || e.currentTarget.classList.contains('blocked')) {
         return;
     }
-    
+
     gameState.currentCell = index;
     playSound('click');
-    
+
     if (gameState.skillCells.includes(index)) {
         updatePrompter('🎁', `Tim ${gameState.currentPlayer} menemukan kotak misteri! Pilih dengan hati-hati...`);
         showBlindboxModal();
@@ -236,7 +236,7 @@ function showBlindboxModal() {
         box.style.pointerEvents = 'auto';
     });
 
-    const results = shuffleArray(['skill','zonk', 'zonk']);
+    const results = shuffleArray(['skill', 'zonk', 'zonk']);
 
     boxes.forEach((box, i) => {
         box.dataset.result = results[i];
@@ -292,10 +292,10 @@ function showBlindboxModal() {
 function handleBlindboxClick(box) {
     // kept for backward compatibility if used; primary flow handled in showBlindboxModal
     const result = box.dataset.result;
-    
+
     box.classList.add('flipped');
     document.querySelectorAll('.blindbox').forEach(b => b.style.pointerEvents = 'none');
-    
+
     setTimeout(() => {
         if (result === 'zonk') {
             box.classList.add('zonk');
@@ -310,7 +310,7 @@ function handleBlindboxClick(box) {
             gameState.pendingSkillValidation[p] = true;
             updatePrompter('⚡', `Tim ${p} mendapat skill Hapus Tanda! Ready to fire! 🔥`);
         }
-        
+
         setTimeout(() => {
             hideModal(blindboxModal);
             showThemeModal(gameState.currentCell);
@@ -322,7 +322,7 @@ function handleBlindboxClick(box) {
 function showThemeModal(index) {
     const theme = gameState.cellThemes[index];
     document.getElementById('themeDisplay').textContent = theme;
-    
+
     showModal(themeModal);
     stopTimer();
 }
@@ -342,15 +342,15 @@ function handleAnswer(isCorrect) {
         cell.textContent = player;
         cell.classList.add('filled', player.toLowerCase());
         renderCells(); // re-render to remove numbering for filled cells
-        
+
         updatePrompter('✅', `Tim ${player} menjawab benar! Kolom berhasil diisi!`);
-        
+
         // If player had a pendingSkillValidation, clear it (kept skill)
         if (gameState.pendingSkillValidation[player]) {
             gameState.pendingSkillValidation[player] = false;
             // keep skill as-is
         }
-        
+
         // Check win
         if (checkWin()) {
             gameState.scores[player]++; // ← TAMBAH INI: increment score
@@ -359,7 +359,7 @@ function handleAnswer(isCorrect) {
             // Note: handleGameEnd will run the closing gimmick and play win music
             return;
         }
-        
+
         // Check draw
         if (gameState.board.every(cell => cell !== '')) {
             handleGameEnd('🤝 SERI! Kedua tim bermain dengan hebat! 🤝');
@@ -368,7 +368,7 @@ function handleAnswer(isCorrect) {
     } else {
         // Wrong answer
         updatePrompter('❌', `Tim ${player} salah menjawab. Giliran berikutnya!`);
-        
+
         // If this cell had been a skill-cell marker, remove that skill cell (original behaviour)
         const cellIndex = gameState.skillCells.indexOf(gameState.currentCell);
         if (cellIndex !== -1) {
@@ -380,15 +380,15 @@ function handleAnswer(isCorrect) {
             gameState.playerSkills[player].count = 0;
             gameState.playerSkills[player].turnsLeft = 0;
             gameState.pendingSkillValidation[player] = false;
-            updatePrompter('⚠️', `Skill Tim ${player} dibatalkan karena jawaban salah. Skill dibatalkan.`); 
+            updatePrompter('⚠️', `Skill Tim ${player} dibatalkan karena jawaban salah. Skill dibatalkan.`);
             playSound('zonk');
             updateDisplay();
         }
     }
-    
+
     // Decrease skill turns only for current player's own turns
     decreaseSkillTurns();
-    
+
     // Switch player
     switchPlayer();
 }
@@ -406,35 +406,35 @@ useSkillLaterBtn.onclick = () => {
 function activateEraseSkill() {
     gameState.waitingForSkillTarget = true;
     skillActionButtons.style.display = 'none';
-    
+
     updatePrompter('🎯', `Tim ${gameState.currentPlayer}: Klik tanda lawan yang ingin dihapus!`);
-    
+
     const opponent = gameState.currentPlayer === 'X' ? 'O' : 'X';
-    
+
     // Highlight opponent cells
     cells.forEach((cell, index) => {
         if (gameState.board[index] === opponent) {
             cell.classList.add('selecting');
-            
+
             const restore = () => {
                 cell.classList.remove('selecting');
                 cell.removeEventListener('click', eraseClick);
                 cell.addEventListener('click', handleCellClick);
             };
-            
+
             const eraseClick = () => {
                 // Erase the mark
                 gameState.board[index] = '';
                 cell.textContent = '';
                 cell.classList.remove('filled', 'x', 'o');
-                
+
                 // restore event handlers & classes
                 cells.forEach(c => {
                     c.classList.remove('selecting');
                     c.removeEventListener('click', eraseClick);
                     c.addEventListener('click', handleCellClick);
                 });
-                
+
                 // Use one skill
                 const p = gameState.currentPlayer;
                 gameState.playerSkills[p].count--;
@@ -442,15 +442,15 @@ function activateEraseSkill() {
                     gameState.playerSkills[p].count = 0;
                     gameState.playerSkills[p].turnsLeft = 0;
                 }
-                
+
                 gameState.waitingForSkillTarget = false;
                 updateDisplay();
                 renderCells();
                 updatePrompter('🗑️', `Tim ${p} menghapus tanda lawan! Strategi cerdas!`);
-                
+
                 playSound('skill');
             };
-            
+
             // replace click
             cell.removeEventListener('click', handleCellClick);
             cell.addEventListener('click', eraseClick);
@@ -463,7 +463,7 @@ function decreaseSkillTurns() {
     const player = gameState.currentPlayer;
     if (gameState.playerSkills[player].turnsLeft > 0) {
         gameState.playerSkills[player].turnsLeft--;
-        
+
         if (gameState.playerSkills[player].turnsLeft === 0) {
             gameState.playerSkills[player].count = 0;
             updatePrompter('⏰', `Skill Tim ${player} expired! Gunakan lebih cepat lain kali!`);
@@ -482,17 +482,17 @@ function switchPlayer() {
 
 function checkWin() {
     const winPatterns = [
-        [0,1,2],[3,4,5],[6,7,8],
-        [0,3,6],[1,4,7],[2,5,8],
-        [0,4,8],[2,4,6]
+        [0, 1, 2], [3, 4, 5], [6, 7, 8],
+        [0, 3, 6], [1, 4, 7], [2, 5, 8],
+        [0, 4, 8], [2, 4, 6]
     ];
-    
+
     for (let pattern of winPatterns) {
-        const [a,b,c] = pattern;
+        const [a, b, c] = pattern;
         if (gameState.board[a] &&
             gameState.board[a] === gameState.board[b] &&
             gameState.board[a] === gameState.board[c]) {
-            
+
             cells[a].classList.add('winning');
             cells[b].classList.add('winning');
             cells[c].classList.add('winning');
@@ -509,6 +509,18 @@ function handleGameEnd(message) {
 }
 
 let stageTimeouts = []; // simpan semua timeout ID
+
+// 🎬 Function untuk pilih video victory secara random
+function getRandomWinVideo() {
+    const winVideos = [
+        'https://github.com/altschmerzsiuu/tic-tac-toe/raw/refs/heads/main/assets/v1.mp4',  // 👈 Ganti dengan link video pertama
+        'https://github.com/altschmerzsiuu/tic-tac-toe/raw/refs/heads/main/assets/v2.mp4',  // 👈 Ganti dengan link video kedua
+        'https://github.com/altschmerzsiuu/tic-tac-toe/raw/refs/heads/main/assets/v3.mp4'   // 👈 Ganti dengan link video ketiga
+    ];
+
+    // Pilih satu video secara random
+    return winVideos[Math.floor(Math.random() * winVideos.length)];
+}
 
 // closing gimmick: show modal, show celebratory text, run 3-2-1 countdown with sound, then play win music
 function runClosingGimmick(originalMessage) {
@@ -548,7 +560,7 @@ function runClosingGimmick(originalMessage) {
                 <div style="font-size: 2rem; margin-bottom: 8px;">🔥 MARI KITA RAYAKAN 🔥</div>
                 <div style="font-size: 1.5rem;">Kemenangan ini bukan kaleng-kaleng!</div>
             `;
-            
+
         },
         () => { // STAGE 3 - Waktunya bersenang-senang + MUSIK RANDOM
             winnerTextEl.innerHTML = `
@@ -560,6 +572,8 @@ function runClosingGimmick(originalMessage) {
             playRandomWinSong(); // 🎵 Mainkan lagu random dari 3 lagu
         },
         () => { // STAGE 5 - Video
+            const randomVideo = getRandomWinVideo();
+
             winnerTextEl.innerHTML = `
                 <div style="font-size: 3rem; margin-bottom: 20px; font-weight: bold;">STANDUP EVERIBADII!!</div>
                 <video 
@@ -568,8 +582,8 @@ function runClosingGimmick(originalMessage) {
                     muted 
                     playsinline 
                     style="width: 400px; height: 400px; border-radius: 20px; object-fit: cover; margin-bottom: 20px;">
-                    <source src="TARUH_LINK_VIDEO_DISINI.mp4" type="video/mp4">
-                    <!-- 👆 GANTI dengan link video kamu (format .mp4 atau .webm) -->
+                    <source src="${randomVideo}" type="video/mp4">
+                    <!-- 👆 Video dipilih secara RANDOM dari 3 video! -->
                     Video tidak bisa dimuat.
                 </video>
                 <div style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">
@@ -707,23 +721,23 @@ function playWinMusic() {
     if (!winMusicPlaying) {
         try {
             sounds.win.currentTime = 0;
-            sounds.win.play().catch(()=>{});
+            sounds.win.play().catch(() => { });
             winMusicPlaying = true;
-        } catch(e){}
+        } catch (e) { }
     }
 }
 
 function stopWinMusic() {
     confettiActive = false;
     winMusicPlaying = false; // reset flag
-    
+
     // 💡 SOLUSI: Hentikan SEMUA lagu kemenangan
     const winSongs = [sounds.win, sounds.win2, sounds.win3];
     winSongs.forEach(song => {
-        try { 
-            song.pause(); 
-            song.currentTime = 0; 
-        } catch(e){}
+        try {
+            song.pause();
+            song.currentTime = 0;
+        } catch (e) { }
     });
 }
 
