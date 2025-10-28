@@ -965,3 +965,57 @@ h1 {
         color: var(--dark-text) !important;
     }
 }
+
+/* ===== FULLSCREEN BUTTON ===== */
+.fullscreen-btn {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    width: 60px;
+    height: 60px;
+    background: var(--gradient-bg);
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10000;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.fullscreen-btn:hover {
+    transform: scale(1.1) rotate(90deg);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+}
+
+.fullscreen-btn:active {
+    transform: scale(0.95);
+}
+
+.fullscreen-icon {
+    font-size: 1.8rem;
+    color: white;
+    font-weight: bold;
+    transition: transform 0.3s ease;
+}
+
+/* Saat fullscreen, icon berubah */
+.fullscreen-btn.active .fullscreen-icon {
+    transform: rotate(45deg);
+}
+
+/* Responsive: tombol lebih kecil di mobile */
+@media (max-width: 768px) {
+    .fullscreen-btn {
+        width: 50px;
+        height: 50px;
+        bottom: 20px;
+        right: 20px;
+    }
+    
+    .fullscreen-icon {
+        font-size: 1.5rem;
+    }
+}
