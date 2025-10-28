@@ -748,3 +748,30 @@ resetScoreBtn.onclick = () => {
     updatePrompter('🔄', 'Skor direset! Siap untuk pertandingan baru!');
 };
 init();
+
+// ===== FULLSCREEN FUNCTIONALITY =====
+const fullscreenBtn = document.getElementById('fullscreenBtn');
+
+fullscreenBtn.onclick = () => {
+    // Cek apakah sudah fullscreen atau belum
+    if (!document.fullscreenElement) {
+        // Masuk fullscreen
+        document.documentElement.requestFullscreen().catch(err => {
+            console.log('Fullscreen error:', err);
+        });
+    } else {
+        // Keluar fullscreen
+        document.exitFullscreen();
+    }
+};
+
+// Update icon tombol saat fullscreen berubah
+document.addEventListener('fullscreenchange', () => {
+    if (document.fullscreenElement) {
+        fullscreenBtn.classList.add('active'); // Tambah class 'active' saat fullscreen
+        fullscreenBtn.title = 'Exit Fullscreen';
+    } else {
+        fullscreenBtn.classList.remove('active'); // Hapus class 'active' saat keluar
+        fullscreenBtn.title = 'Toggle Fullscreen';
+    }
+});
