@@ -252,7 +252,7 @@ function showBlindboxModal() {
             back.innerHTML = `
                 <div class="skill-icon">💥</div>
                 <div class="skill-name">ZONK!</div>
-                <div class="skill-desc">Tidak dapat apa-apa</div>
+                <div class="skill-desc">Sorry, Yeeeee!</div>
             `;
         }
     });
